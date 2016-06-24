@@ -1,4 +1,3 @@
-
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
@@ -21,6 +20,10 @@ object Data {
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
+    run(sc,sqlContext)
+  }
+
+  def run(sc: SparkContext, sqlContext: SQLContext): Unit ={
     val df = buildDataframe(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema"))
     df.show()
   }
