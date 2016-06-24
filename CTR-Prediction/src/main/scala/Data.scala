@@ -37,9 +37,16 @@ object Data {
   }
 
   def buildDataframe(sc: SparkContext, sqlContext: SQLContext,schema: StructType): DataFrame ={
+    /*
+      create data-frame for all clicks
+    */
     val clickSecond = path+"\\training2nd\\clk*"
+    val clickThird = path+"\\training3rd\\clk*"
 
-    sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(clickSecond)
+    val cdf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(clickSecond)
+    val cdf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(clickThird)
+
+    cdf2.unionAll(cdf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
 
   }
 
