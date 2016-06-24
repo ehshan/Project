@@ -1,5 +1,6 @@
-import java.io.File
 
+import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
 import scala.io.Source
@@ -10,10 +11,17 @@ import scala.io.Source
 object Data {
 
   //location of the data-change as appropriate
-  val path = "E:\\_MSC_PROJECT\\datasets\\ipinyou-dataset\\ipinyou.contest.dataset"
+  val path = "D:\\_MSC_PROJECT\\datasets\\ipinyou-dataset\\ipinyou.contest.dataset"
 
   def main (args: Array[String]){
-)
+    /*
+     config Spark Engine
+    */
+    val conf = new SparkConf().setAppName("ctr-prediction").setMaster("local")
+    val sc = new SparkContext(conf)
+    val sqlContext = new SQLContext(sc)
+
+
   }
 
   def buildSchema(file: String): StructType = {
