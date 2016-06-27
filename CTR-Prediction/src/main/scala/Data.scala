@@ -47,7 +47,7 @@ object Data {
     val cdf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(clickSecond)
     val cdf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(clickThird)
 
-    cdf2.unionAll(cdf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
+    val allClicks = cdf2.unionAll(cdf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
 
     /*
       create data-frame for all impressions
@@ -60,6 +60,7 @@ object Data {
 
     val allImps = idf2.unionAll(idf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
 
+    allImps.unionAll(allClicks)//joins all clicks and all imps
   }
 
 
