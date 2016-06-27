@@ -49,6 +49,17 @@ object Data {
 
     cdf2.unionAll(cdf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
 
+    /*
+      create data-frame for all impressions
+    */
+    val impSecond = path+"\\training2nd\\imp*"
+    val impThird = path+"\\training3rd\\imp*"
+
+    val idf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(impSecond)
+    val idf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(impThird)
+
+    val allImps = idf2.unionAll(idf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
+
   }
 
 
