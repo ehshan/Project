@@ -26,6 +26,7 @@ object Data {
   def run(sc: SparkContext, sqlContext: SQLContext): Unit ={
     val df = buildDataframe(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema"))
     df.show()
+    targetFeatures(df)
   }
 
   def buildSchema(file: String): StructType = {
@@ -49,5 +50,16 @@ object Data {
     cdf2.unionAll(cdf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
 
   }
+
+
+  def targetFeatures(df: DataFrame){
+    /*
+     count number of records
+     */
+    val allRecords = df.count()
+    println("Total no records: "+allRecords)
+
+  }
+
 
 }
