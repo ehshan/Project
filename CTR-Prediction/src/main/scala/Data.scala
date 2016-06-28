@@ -7,7 +7,7 @@ import org.apache.spark.sql.functions._
 import scala.io.Source
 
 /**
-  * Created by Ehshan on 21/06/2016.
+  * @author: Ehshan Veerabangsa
   */
 object Data {
 
@@ -25,7 +25,7 @@ object Data {
     run(sc,sqlContext)
   }
 
-  def run(sc: SparkContext, sqlContext: SQLContext): Unit ={
+  def run(sc: SparkContext, sqlContext: SQLContext){
     val df = createTarget(buildDataframe(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema")))
     df.show()
     targetFeatures(df)
@@ -65,9 +65,9 @@ object Data {
     allImps.unionAll(allClicks)//joins all clicks and all imps
   }
 
-  /*
-    Create a click target variable and appends it to a data-frame
-  */
+  /**
+    * Create a click target variable and appends it to a data-frame
+    */
   def createTarget(df: DataFrame): DataFrame = {
     //function which maps LogType to click boolean
     val click: (String => Int) = (arg: String) => if (arg != "1") 1 else 0
