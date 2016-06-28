@@ -87,6 +87,13 @@ object Data {
     val allRecords = df.count()
     println("Total no records: "+allRecords)
 
+    /*
+        Average click-through rate for all records
+    */
+    val avgCTR = df.select(avg("Click"))
+    avgCTR.show()
+
+
   }
 
 
