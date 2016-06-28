@@ -26,7 +26,7 @@ object Data {
   }
 
   def run(sc: SparkContext, sqlContext: SQLContext){
-    val df = createTarget(buildDataframe(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema")))
+    val df = createTarget(buildDataframe(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema"))).cache()
     df.show()
     targetFeatures(df)
   }
