@@ -7,8 +7,8 @@ import org.apache.spark.sql.functions._
 import scala.io.Source
 
 /**
-  * @author: Ehshan Veerabangsa
-  */
+  * @author Ehshan Veerabangsa
+  **/
 object Data {
 
   //location of the data-change as appropriate
@@ -73,10 +73,10 @@ object Data {
     val click: (String => Int) = (arg: String) => if (arg != "1") 1 else 0
 
     //make an sql function option (udf - user defined function)
-    val sqlfunc = udf(click)
+    val clickFunc = udf(click)
 
     //creating new data-frame with appended column
-    df.withColumn("Click", sqlfunc(col("LogType")))
+    df.withColumn("Click", clickFunc(col("LogType")))
 
   }
 
