@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat
+import java.util.Calendar
 
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
@@ -93,6 +94,10 @@ object Data {
     */
     val avgCTR = df.select(avg("Click"))
     avgCTR.show()
+  }
+
+  def transformTime(df: DataFrame): DataFrame = {
+    df
   }
 
 }
