@@ -100,6 +100,17 @@ object Data {
     df
   }
 
+  /**
+    * Helper method to convert timestamps
+    */
+  def convertTime(string: String, field: Int): Int = {
+    // getting the date format from new object parsing
+    val date = dateFormatter.formatter.get().parse(string)
+    //getting a calendar instance
+    val calendar = Calendar.getInstance()
+    calendar.setTime(date)
+    calendar.get(field)
+  }
 }
 /**
   * Object to override the initial date format for a calendar object
