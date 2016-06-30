@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
@@ -86,15 +88,19 @@ object Data {
      */
     val allRecords = df.count()
     println("Total no records: "+allRecords)
-
     /*
         Average click-through rate for all records
     */
     val avgCTR = df.select(avg("Click"))
     avgCTR.show()
-
-
   }
 
-
+}
+/**
+  * Object to override the initial date format for a calendar object
+  */
+object dateFormatter {
+  val formatter = new ThreadLocal[SimpleDateFormat]() {
+    override def initialValue(): SimpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSS")
+  }
 }
