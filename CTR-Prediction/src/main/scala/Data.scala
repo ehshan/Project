@@ -97,7 +97,21 @@ object Data {
   }
 
   def transformTime(df: DataFrame): DataFrame = {
-    df
+    //transformation functions
+    val getYear :  (String => Int) = (arg: String) => convertTime(arg, Calendar.YEAR)
+    val getMonth :  (String => Int) = (arg: String) => convertTime(arg, Calendar.MONTH)
+    val getDay :  (String => Int) = (arg: String) => convertTime(arg, Calendar.DAY_OF_MONTH)
+    val getHour :  (String => Int) = (arg: String) => convertTime(arg, Calendar.HOUR_OF_DAY)
+
+    val yearFunc = udf(getYear)
+    val monthFunc = udf(getMonth)
+    val dayFunc = udf(getDay)
+    val hourFunc = udf(getHour)
+
+    //adding new columns with new time features
+    df.withColumn("Year", yearFunc(df("Timestamp"))).withColumn("Month", monthFunc(df("Timestamp")))
+      .withColumn("Day", dayFunc(df("Timestamp"))).withColumn("Hour", hourFunc(df("Timestamp")))
+      .drop("Timestamp")//dropping original timestamp feature
   }
 
   /**
