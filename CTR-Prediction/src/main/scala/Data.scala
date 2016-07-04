@@ -137,7 +137,9 @@ object Data {
         case x => "n/a"
       }
     }
-    df
+    val tod: (Int => String) = (arg: Int) => time(arg)
+    val timeFunq = udf(tod)
+    df.withColumn("TimeofDay", timeFunq(df("Hour")))
   }
 }
 /**
