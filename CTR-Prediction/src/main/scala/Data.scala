@@ -125,6 +125,20 @@ object Data {
     calendar.setTime(date)
     calendar.get(field)
   }
+
+  def timeOfDay(df: DataFrame): DataFrame ={
+    def time (td: Int): String = {
+      td match {
+        case x if 0 until 7 contains x  => "midnight"
+        case x if 7 until 12 contains x => "morning"
+        case x if 12 until 16 contains x => "afternoon"
+        case x if 16 until 20 contains x => "evening"
+        case x if 20 until 23 contains x => "night"
+        case x => "n/a"
+      }
+    }
+    df
+  }
 }
 /**
   * Object to override the initial date format for a calendar object
