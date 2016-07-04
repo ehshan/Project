@@ -80,7 +80,7 @@ object Data {
     val clickFunc = udf(click)
 
     //creating new data-frame with appended column
-    df.withColumn("Click", clickFunc(col("LogType")))
+    df.withColumn("Click", clickFunc(col("LogType"))).drop("LogType")
 
   }
 
