@@ -135,12 +135,12 @@ object Data {
         case x if 12 until 16 contains x => "afternoon"
         case x if 16 until 20 contains x => "evening"
         case x if 20 until 23 contains x => "night"
-        case x => "n/a"
+        case x => null
       }
     }
     val tod: (Int => String) = (arg: Int) => time(arg)
-    val timeFunq = udf(tod)
-    df.withColumn("TimeofDay", timeFunq(df("Hour")))
+    val timeFunc = udf(tod)
+    df.withColumn("TimeofDay", timeFunc(df("Hour")))
   }
 }
 /**
