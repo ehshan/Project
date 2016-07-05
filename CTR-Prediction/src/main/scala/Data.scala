@@ -10,7 +10,7 @@ import org.apache.spark.sql.functions._
 import scala.io.Source
 
 /**
-  * @author Ehshan Veerabangsa
+  * @author Ehshan-Veerabangsa
   **/
 object Data {
 
