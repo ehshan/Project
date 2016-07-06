@@ -143,7 +143,7 @@ object Data {
     df.withColumn("TimeofDay", timeFunc(df("Hour")))
   }
 
-  def splitByAdvertiser(df: DataFrame): Array[DataFrame]={
+  def splitByAdvertiser(df: DataFrame): Map[Any,DataFrame]={
 
     val array = array(df)
     array
