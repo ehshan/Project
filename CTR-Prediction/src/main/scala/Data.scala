@@ -149,7 +149,10 @@ object Data {
     array
 
     //sequence of advertisers
-    val advertiserSeq = df.select("AdvertiserID").distinct.collect.flatMap(_.toSeq)
+    val advertisers = df.select("AdvertiserID").distinct.collect.flatMap(_.toSeq)
+
+    //map containing all df's split by AdvertiserID - key should be ID
+    val dfMap = advertisers.map(advertiser => advertiser -> df.where("AdvertiserID" <=> advertiser)).toMap
   }
 
 }
