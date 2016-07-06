@@ -147,6 +147,9 @@ object Data {
 
     val array = array(df)
     array
+
+    //sequence of advertisers
+    val advertiserSeq = df.select("AdvertiserID").distinct.collect.flatMap(_.toSeq)
   }
 
 }
