@@ -142,6 +142,13 @@ object Data {
     val timeFunc = udf(tod)
     df.withColumn("TimeofDay", timeFunc(df("Hour")))
   }
+
+  def splitByAdvertiser(df: DataFrame): Array[DataFrame]={
+
+    val array = array(df)
+    array
+  }
+
 }
 /**
   * Object to override the initial date format for a calendar object
