@@ -147,14 +147,13 @@ object Data {
     //TODO instantiate single instances of SQL and Spark Contexts
     import sQLContext.implicits._
 
-    val array = array(df)
-    array
-
     //sequence of advertisers
     val advertisers = df.select("AdvertiserID").distinct.collect.flatMap(_.toSeq)
 
-    //map containing all df's split by AdvertiserID - key should be ID
+    //map containing all df's split by AdvertiserID - keys should be IDs
     val dfMap = advertisers.map(advertiser => advertiser -> df.where($"AdvertiserID" <=> advertiser)).toMap
+
+    dfMap
   }
 
 }
