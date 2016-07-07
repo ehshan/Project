@@ -31,8 +31,9 @@ object Data {
   def run(sc: SparkContext, sqlContext: SQLContext){
     val df = timeOfDay(transformTime(createTarget(buildDataframe(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema")))))
       .cache()
-    df.show()
-    targetFeatures(df)
+//    df.show()
+//    targetFeatures(df) //COMMENT OUT FOR NOW
+    val map = splitByAdvertiser(df,sqlContext)
   }
 
   def buildSchema(file: String): StructType = {
@@ -50,8 +51,10 @@ object Data {
     val clickSecond = path+"\\training2nd\\clk*"
     val clickThird = path+"\\training3rd\\clk*"
 
-    val cdf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(clickSecond)
-    val cdf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(clickThird)
+    val cdf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .schema(schema).option("delimiter", "\\t").load(clickSecond).cache()
+    val cdf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .schema(schema).option("delimiter", "\\t").load(clickThird).cache()
 
     val allClicks = cdf2.unionAll(cdf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
 
@@ -61,8 +64,10 @@ object Data {
     val impSecond = path+"\\training2nd\\imp*"
     val impThird = path+"\\training3rd\\imp*"
 
-    val idf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(impSecond)
-    val idf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").schema(schema).option("delimiter", "\\t").load(impThird)
+    val idf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .schema(schema).option("delimiter", "\\t").load(impSecond).cache()
+    val idf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .schema(schema).option("delimiter", "\\t").load(impThird).cache()
 
     val allImps = idf2.unionAll(idf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
 
@@ -80,7 +85,7 @@ object Data {
     val clickFunc = udf(click)
 
     //creating new data-frame with appended column
-    df.withColumn("Click", clickFunc(col("LogType"))).drop("LogType")
+    df.withColumn("Click", clickFunc(col("LogType"))).drop("LogType").cache()
 
   }
 
@@ -93,7 +98,7 @@ object Data {
     /*
         Average click-through rate for all records
     */
-    val avgCTR = df.select(avg("Click"))
+    val avgCTR = df.select(avg("Click")).cache()
     avgCTR.show()
   }
 
@@ -112,7 +117,7 @@ object Data {
     //adding new columns with new time features
     df.withColumn("Year", yearFunc(df("Timestamp"))).withColumn("Month", monthFunc(df("Timestamp")))
       .withColumn("Day", dayFunc(df("Timestamp"))).withColumn("Hour", hourFunc(df("Timestamp")))
-      .drop("Timestamp")//dropping original timestamp feature
+      .drop("Timestamp").cache()//dropping original timestamp feature
   }
 
   /**
@@ -120,7 +125,7 @@ object Data {
     */
   def convertTime(string: String, field: Int): Int = {
     // getting the date format from new object parsing
-    val date = dateFormatter.formatter.get().parse(string)
+    val date = DateFormatter.formatter.get().parse(string)
     //getting a calendar instance
     val calendar = Calendar.getInstance()
     calendar.setTime(date)
@@ -140,7 +145,7 @@ object Data {
     }
     val tod: (Int => String) = (arg: Int) => time(arg)
     val timeFunc = udf(tod)
-    df.withColumn("TimeofDay", timeFunc(df("Hour")))
+    df.withColumn("TimeOfDay", timeFunc(df("Hour"))).cache()
   }
 
   def splitByAdvertiser(df: DataFrame, sQLContext: SQLContext): Map[Any,DataFrame]={
@@ -160,7 +165,7 @@ object Data {
 /**
   * Object to override the initial date format for a calendar object
   */
-object dateFormatter {
+object DateFormatter {
   val formatter = new ThreadLocal[SimpleDateFormat]() {
     override def initialValue(): SimpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSS")
   }
