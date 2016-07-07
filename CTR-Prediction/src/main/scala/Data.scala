@@ -143,7 +143,9 @@ object Data {
     df.withColumn("TimeofDay", timeFunc(df("Hour")))
   }
 
-  def splitByAdvertiser(df: DataFrame): Map[Any,DataFrame]={
+  def splitByAdvertiser(df: DataFrame, sQLContext: SQLContext): Map[Any,DataFrame]={
+    //TODO instantiate single instances of SQL and Spark Contexts
+    import sQLContext.implicits._
 
     val array = array(df)
     array
@@ -152,7 +154,7 @@ object Data {
     val advertisers = df.select("AdvertiserID").distinct.collect.flatMap(_.toSeq)
 
     //map containing all df's split by AdvertiserID - key should be ID
-    val dfMap = advertisers.map(advertiser => advertiser -> df.where("AdvertiserID" <=> advertiser)).toMap
+    val dfMap = advertisers.map(advertiser => advertiser -> df.where($"AdvertiserID" <=> advertiser)).toMap
   }
 
 }
