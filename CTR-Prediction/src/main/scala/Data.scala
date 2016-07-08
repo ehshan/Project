@@ -17,7 +17,7 @@ object Data {
   //location of the data-change as appropriate
   val path = "D:\\_MSC_PROJECT\\datasets\\ipinyou-dataset\\ipinyou.contest.dataset"
 
-  def main (args: Array[String]){
+  def main(args: Array[String]) {
     /*
      config Spark Engine
     */
@@ -25,53 +25,53 @@ object Data {
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
-    run(sc,sqlContext)
+    run(sc, sqlContext)
   }
 
-  def run(sc: SparkContext, sqlContext: SQLContext){
+  def run(sc: SparkContext, sqlContext: SQLContext) {
     val df = timeOfDay(transformTime(createTarget(buildDataFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema")))))
       .cache()
-//    df.show()
-//    targetFeatures(df) //COMMENT OUT FOR NOW
-    val map = splitByAdvertiser(df,sqlContext)
+    //    df.show()
+    //    targetFeatures(df) //COMMENT OUT FOR NOW
+    val map = splitByAdvertiser(df, sqlContext)
   }
 
   def buildSchema(file: String): StructType = {
     var schemaString = ""
 
-    for (line <- Source.fromFile(file).getLines) schemaString = schemaString + line+" "
+    for (line <- Source.fromFile(file).getLines) schemaString = schemaString + line + " "
     //create header for data-frame using column objects based on schema
     StructType(schemaString.split(" ").map(fieldName ⇒ StructField(fieldName, StringType, nullable = true)))
   }
 
-  def buildDataFrame(sc: SparkContext, sqlContext: SQLContext,schema: StructType): DataFrame ={
+  def buildDataFrame(sc: SparkContext, sqlContext: SQLContext, schema: StructType): DataFrame = {
     /*
       create data-frame for all clicks
     */
-    val clickSecond = path+"\\training2nd\\clk*"
-    val clickThird = path+"\\training3rd\\clk*"
+    val clickSecond = path + "\\training2nd\\clk*"
+    val clickThird = path + "\\training3rd\\clk*"
 
     val cdf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
       .schema(schema).option("delimiter", "\\t").load(clickSecond).cache()
     val cdf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
       .schema(schema).option("delimiter", "\\t").load(clickThird).cache()
 
-    val allClicks = cdf2.unionAll(cdf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
+    val allClicks = cdf2.unionAll(cdf3) //UNION ALL TO ADD ONE FRAME TO ANOTHER
 
     /*
       create data-frame for all impressions
     */
-    val impSecond = path+"\\training2nd\\imp*"
-    val impThird = path+"\\training3rd\\imp*"
+    val impSecond = path + "\\training2nd\\imp*"
+    val impThird = path + "\\training3rd\\imp*"
 
     val idf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
       .schema(schema).option("delimiter", "\\t").load(impSecond).cache()
     val idf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
       .schema(schema).option("delimiter", "\\t").load(impThird).cache()
 
-    val allImps = idf2.unionAll(idf3)//UNION ALL TO ADD ONE FRAME TO ANOTHER
+    val allImps = idf2.unionAll(idf3) //UNION ALL TO ADD ONE FRAME TO ANOTHER
 
-    allImps.unionAll(allClicks)//joins all clicks and all imps
+    allImps.unionAll(allClicks) //joins all clicks and all imps
   }
 
   /**
@@ -91,10 +91,10 @@ object Data {
 
   def transformTime(df: DataFrame): DataFrame = {
     //transformation functions
-    val getYear :  (String => Int) = (arg: String) => convertTime(arg, Calendar.YEAR)
-    val getMonth :  (String => Int) = (arg: String) => convertTime(arg, Calendar.MONTH)
-    val getDay :  (String => Int) = (arg: String) => convertTime(arg, Calendar.DAY_OF_MONTH)
-    val getHour :  (String => Int) = (arg: String) => convertTime(arg, Calendar.HOUR_OF_DAY)
+    val getYear: (String => Int) = (arg: String) => convertTime(arg, Calendar.YEAR)
+    val getMonth: (String => Int) = (arg: String) => convertTime(arg, Calendar.MONTH)
+    val getDay: (String => Int) = (arg: String) => convertTime(arg, Calendar.DAY_OF_MONTH)
+    val getHour: (String => Int) = (arg: String) => convertTime(arg, Calendar.HOUR_OF_DAY)
 
     val yearFunc = udf(getYear)
     val monthFunc = udf(getMonth)
@@ -104,7 +104,7 @@ object Data {
     //adding new columns with new time features
     df.withColumn("Year", yearFunc(df("Timestamp"))).withColumn("Month", monthFunc(df("Timestamp")))
       .withColumn("Day", dayFunc(df("Timestamp"))).withColumn("Hour", hourFunc(df("Timestamp")))
-      .drop("Timestamp").cache()//dropping original timestamp feature
+      .drop("Timestamp").drop("Year").cache() //dropping original timestamp feature//years has only one value
   }
 
   /**
@@ -119,10 +119,10 @@ object Data {
     calendar.get(field)
   }
 
-  def timeOfDay(df: DataFrame): DataFrame ={
-    def time (td: Int): String = {
+  def timeOfDay(df: DataFrame): DataFrame = {
+    def time(td: Int): String = {
       td match {
-        case x if 0 until 7 contains x  => "midnight"
+        case x if 0 until 7 contains x => "midnight"
         case x if 7 until 12 contains x => "morning"
         case x if 12 until 16 contains x => "afternoon"
         case x if 16 until 20 contains x => "evening"
@@ -135,7 +135,7 @@ object Data {
     df.withColumn("TimeOfDay", timeFunc(df("Hour"))).cache()
   }
 
-  def splitByAdvertiser(df: DataFrame, sQLContext: SQLContext): Map[Any,DataFrame]={
+  def splitByAdvertiser(df: DataFrame, sQLContext: SQLContext): Map[Any, DataFrame] = {
     //TODO instantiate single instances of SQL and Spark Contexts
     import sQLContext.implicits._
 
@@ -148,36 +148,36 @@ object Data {
     dfMap
   }
 
-  def targetFeatures(df: DataFrame){
+  def targetFeatures(df: DataFrame) {
 
     //count number of records
     val allRecords = df.count()
-    println("Total no records: "+allRecords)
+    println("Total no records: " + allRecords)
 
     //Average click-through rate for all records
     val avgCTR = df.select(avg("Click")).cache()
     avgCTR.show()
   }
-}
 
-  def distinctValues(df: DataFrame){
+
+  def distinctValues(df: DataFrame) {
     //TODO find faster way to do this
     val allCounts = df.select(
-      countDistinct("BidID"),countDistinct("iPinYouID"), countDistinct("UserAgent"),
-      countDistinct("IP"),countDistinct("Region"), countDistinct("City"),
-      countDistinct("AdExchange"),countDistinct("Domain"), countDistinct("URL"),
-      countDistinct("AnonymousURLID"),countDistinct("AdSlotID"), countDistinct("AdSlotWidth"),
-      countDistinct("AdSlotHeight"),countDistinct("AdSlotVisibility"), countDistinct("AdSlotFormat"),
-      countDistinct("AdSlotFloorPrice"),countDistinct("CreativeID"), countDistinct("BiddingPrice"),
-      countDistinct("PayingPrice"),countDistinct("KeyPageURL"), countDistinct("AdvertiserID"),
-      countDistinct("UserTags"),countDistinct("Click"), countDistinct("Year"),
+      countDistinct("BidID"), countDistinct("iPinYouID"), countDistinct("UserAgent"),
+      countDistinct("IP"), countDistinct("Region"), countDistinct("City"),
+      countDistinct("AdExchange"), countDistinct("Domain"), countDistinct("URL"),
+      countDistinct("AnonymousURLID"), countDistinct("AdSlotID"), countDistinct("AdSlotWidth"),
+      countDistinct("AdSlotHeight"), countDistinct("AdSlotVisibility"), countDistinct("AdSlotFormat"),
+      countDistinct("AdSlotFloorPrice"), countDistinct("CreativeID"), countDistinct("BiddingPrice"),
+      countDistinct("PayingPrice"), countDistinct("KeyPageURL"), countDistinct("AdvertiserID"),
+      countDistinct("UserTags"), countDistinct("Click"), countDistinct("Year"),
       countDistinct("Month"), countDistinct("Day"), countDistinct("Hour"),
       countDistinct("TimeOfDay")
     ).cache()
     allCounts.show()
 
-
   }
+}
 /**
   * Object to override the initial date format for a calendar object
   */
