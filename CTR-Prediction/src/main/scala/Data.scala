@@ -29,7 +29,7 @@ object Data {
   }
 
   def run(sc: SparkContext, sqlContext: SQLContext){
-    val df = timeOfDay(transformTime(createTarget(buildDataframe(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema")))))
+    val df = timeOfDay(transformTime(createTarget(buildDataFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema")))))
       .cache()
 //    df.show()
 //    targetFeatures(df) //COMMENT OUT FOR NOW
@@ -44,7 +44,7 @@ object Data {
     StructType(schemaString.split(" ").map(fieldName ⇒ StructField(fieldName, StringType, nullable = true)))
   }
 
-  def buildDataframe(sc: SparkContext, sqlContext: SQLContext,schema: StructType): DataFrame ={
+  def buildDataFrame(sc: SparkContext, sqlContext: SQLContext,schema: StructType): DataFrame ={
     /*
       create data-frame for all clicks
     */
@@ -87,19 +87,6 @@ object Data {
     //creating new data-frame with appended column
     df.withColumn("Click", clickFunc(col("LogType"))).drop("LogType").cache()
 
-  }
-
-  def targetFeatures(df: DataFrame){
-    /*
-        count number of records
-     */
-    val allRecords = df.count()
-    println("Total no records: "+allRecords)
-    /*
-        Average click-through rate for all records
-    */
-    val avgCTR = df.select(avg("Click")).cache()
-    avgCTR.show()
   }
 
   def transformTime(df: DataFrame): DataFrame = {
@@ -161,7 +148,36 @@ object Data {
     dfMap
   }
 
+  def targetFeatures(df: DataFrame){
+
+    //count number of records
+    val allRecords = df.count()
+    println("Total no records: "+allRecords)
+
+    //Average click-through rate for all records
+    val avgCTR = df.select(avg("Click")).cache()
+    avgCTR.show()
+  }
 }
+
+  def distinctValues(df: DataFrame){
+    //TODO find faster way to do this
+    val allCounts = df.select(
+      countDistinct("BidID"),countDistinct("iPinYouID"), countDistinct("UserAgent"),
+      countDistinct("IP"),countDistinct("Region"), countDistinct("City"),
+      countDistinct("AdExchange"),countDistinct("Domain"), countDistinct("URL"),
+      countDistinct("AnonymousURLID"),countDistinct("AdSlotID"), countDistinct("AdSlotWidth"),
+      countDistinct("AdSlotHeight"),countDistinct("AdSlotVisibility"), countDistinct("AdSlotFormat"),
+      countDistinct("AdSlotFloorPrice"),countDistinct("CreativeID"), countDistinct("BiddingPrice"),
+      countDistinct("PayingPrice"),countDistinct("KeyPageURL"), countDistinct("AdvertiserID"),
+      countDistinct("UserTags"),countDistinct("Click"), countDistinct("Year"),
+      countDistinct("Month"), countDistinct("Day"), countDistinct("Hour"),
+      countDistinct("TimeOfDay")
+    ).cache()
+    allCounts.show()
+
+
+  }
 /**
   * Object to override the initial date format for a calendar object
   */
