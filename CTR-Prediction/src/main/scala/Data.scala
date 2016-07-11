@@ -148,6 +148,18 @@ object Data {
     dfMap
   }
 
+  /**
+    * Writes the data-set to individual csv files - split by advertiser
+    *
+    * @param map
+    */
+  def saveByAdvertiser(map: Map[Any, DataFrame]){
+    map.values.foreach(i =>
+      map(i).write.format("com.databricks.spark.csv").option("header", "true")
+        .save(path+"\\"+i)
+    )
+  }
+
   def targetFeatures(df: DataFrame) {
 
     //count number of records
