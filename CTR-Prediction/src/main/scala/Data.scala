@@ -160,6 +160,29 @@ object Data {
     )
   }
 
+  /**
+    *
+    * @param id
+    * @param map
+    * @return
+    */
+  def getFrameByAdvertiser(id: String, map: Map[Any,DataFrame]): DataFrame = {
+    val option = map.get(id)
+
+    /**
+      * Helper method to unpack option
+      *
+      * @param opt
+      * @return
+      */
+    def showFrame(opt: Option[DataFrame]) =
+      opt match {
+        case Some(s) => s
+        case None => null
+      }
+    showFrame(option)
+  }
+
   def targetFeatures(df: DataFrame) {
 
     //count number of records
