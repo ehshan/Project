@@ -1,3 +1,4 @@
+import org.apache.spark.ml.feature.StringIndexer
 import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
@@ -46,6 +47,12 @@ object ML {
     val weights = Array(0.8, 0.2)
     val seed = 11L
     val df = castTypes(df)
+
+    //creating continuous features (categorical to numeric)
+    val indexer = new StringIndexer().setInputCol("AdSlotFormat").setOutputCol("AdSlotFormat-Index")
+    val indexed = indexer.fit(df).transform(df)
+    //    indexed.show()
+
   }
 
 }
