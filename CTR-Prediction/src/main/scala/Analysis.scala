@@ -33,4 +33,28 @@ object Analysis {
 
   }
 
+  def creativeCTR(df: DataFrame){
+
+    //average CTR for all Creative Id's
+    val creative = df.groupBy("CreativeID").agg(avg("Click"))
+    creative.show()
+
+    //average CTR for all Ad widths
+    val width = df.groupBy("AdSlotWidth").agg(avg("Click"))
+    width.show()
+
+    //average CTR for all Ad heights
+    val height = df.groupBy("AdSlotHeight").agg(avg("Click"))
+    height.show()
+
+    //average CTR for all Ad format
+    val format = df.groupBy("AdSlotFormat").agg(avg("Click"))
+    format.show()
+
+    //average CTR for all Ad page positions
+    val visibility = df.groupBy("AdSlotVisibility").agg(avg("Click"))
+    visibility.show()
+
+  }
+
 }
