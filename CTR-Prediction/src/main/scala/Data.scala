@@ -17,24 +17,24 @@ object Data {
   //location of the data-change as appropriate
   val path = "D:\\_MSC_PROJECT\\datasets\\ipinyou-dataset\\ipinyou.contest.dataset"
 
-  def main(args: Array[String]) {
-    /*
-     config Spark Engine
-    */
-    val conf = new SparkConf().setAppName("ctr-prediction").setMaster("local")
-    val sc = new SparkContext(conf)
-    val sqlContext = new SQLContext(sc)
-
-    run(sc, sqlContext)
-  }
-
-  def run(sc: SparkContext, sqlContext: SQLContext) {
-    val df = timeOfDay(transformTime(createTarget(buildDataFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema")))))
-      .cache()
-    //    df.show()
-    //    targetFeatures(df) //COMMENT OUT FOR NOW
-    val map = splitByAdvertiser(df, sqlContext)
-  }
+//  def main(args: Array[String]) {
+//    /*
+//     config Spark Engine
+//    */
+//    val conf = new SparkConf().setAppName("ctr-prediction").setMaster("local")
+//    val sc = new SparkContext(conf)
+//    val sqlContext = new SQLContext(sc)
+//
+//    run(sc, sqlContext)
+//  }
+//
+//  def run(sc: SparkContext, sqlContext: SQLContext) {
+//    val df = timeOfDay(transformTime(createTarget(buildDataFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema")))))
+//      .cache()
+//    //    df.show()
+//    //    targetFeatures(df) //COMMENT OUT FOR NOW
+//    val map = splitByAdvertiser(df, sqlContext)
+//  }
 
   def buildSchema(file: String): StructType = {
     var schemaString = ""
