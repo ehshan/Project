@@ -1,3 +1,4 @@
+import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
 
@@ -23,11 +24,28 @@ object ML {
   }
 
   /**
+    * Helper method to cast click column from a string to a double
+    *
+    * @param df
+    * @return
+    */
+  def castTypes(df: DataFrame): DataFrame={
+    val castDf = df
+      .withColumn("clickTmp", df("Click").cast(DoubleType))
+      .drop("Click")
+      .withColumnRenamed("clickTmp", "Click")
+    castDf
+  }
+
+  /**
     * Applying logistic regression algorithm using a single feature
+    *
     * @param df
     */
   def singleFeature(df: DataFrame){
-
+    val weights = Array(0.8, 0.2)
+    val seed = 11L
+    val df = castTypes(df)
   }
 
 }
