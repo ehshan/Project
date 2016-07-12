@@ -1,4 +1,4 @@
-import org.apache.spark.ml.feature.StringIndexer
+import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer}
 import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
@@ -48,10 +48,15 @@ object ML {
     val seed = 11L
     val df = castTypes(df)
 
-    //creating continuous features (categorical to numeric)
+    //mapping string columns to indices
     val indexer = new StringIndexer().setInputCol("AdSlotFormat").setOutputCol("AdSlotFormat-Index")
     val indexed = indexer.fit(df).transform(df)
     //    indexed.show()
+
+    //converting a categorical feature to a binary vector
+    val encoder = new OneHotEncoder().setInputCol("AdSlotFormat-Index").setOutputCol("AdSlotFormat-Vector")
+    val encoded = encoder.transform(indexed)
+    //    encoded.select("Click", "AdSlotFormat-Vector").show()
 
   }
 
