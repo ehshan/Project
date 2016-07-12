@@ -1,4 +1,4 @@
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
 
 object ML {
@@ -20,6 +20,14 @@ object ML {
     //    df.show()
     //    targetFeatures(df) //COMMENT OUT FOR NOW
 //    val map = Data.splitByAdvertiser(df, sqlContext)//COMMENT OUT FOR NOW
+  }
+
+  /**
+    * Applying logistic regression algorithm using a single feature
+    * @param df
+    */
+  def singleFeature(df: DataFrame){
+
   }
 
 }
