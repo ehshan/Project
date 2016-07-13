@@ -1,5 +1,6 @@
 import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer}
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
+import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.sql.types.DoubleType
@@ -73,11 +74,20 @@ object ML {
     lrModel.clearThreshold()
 
     //predicting click on training set using results from LR algorithm
-    val Predictions = testingSet.map{
+    val predictions = testingSet.map{
       case LabeledPoint(label, features) =>
         val prediction = lrModel.predict(features)
         (prediction, label)
     }
+
+    // creating metric object for evaluation
+    val brMetric = new BinaryClassificationMetrics(predictions)
+
+    //using ROC as metric to compare actual click with predicted ones
+    val roc = brMetric.areaUnderROC()
+
+    //printing results
+    println(roc)
   }
 
 }
