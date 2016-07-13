@@ -1,4 +1,6 @@
 import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer}
+import org.apache.spark.mllib.linalg.Vector
+import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
@@ -53,6 +55,11 @@ object ML {
     val encoded = encoder.transform(indexed)
     //    encoded.select("Click", "AdSlotFormat-Vector").show()
 
+    //creating label points from data-frame
+    val labeledData = encoded.map{
+      row =>
+        LabeledPoint(row.getAs[Double]("Click"),row.getAs[Vector]("AdSlotFormat-Vector"))
+    }
 
   }
 
