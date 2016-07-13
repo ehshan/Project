@@ -1,4 +1,5 @@
 import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer}
+import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.sql.types.DoubleType
@@ -60,6 +61,11 @@ object ML {
       row =>
         LabeledPoint(row.getAs[Double]("Click"),row.getAs[Vector]("AdSlotFormat-Vector"))
     }
+
+    //splitting data-set into train and test sets
+    val Array(trainingSet, testingSet) = labeledData.randomSplit(weights, seed)
+    trainingSet.cache()
+    
 
   }
 
