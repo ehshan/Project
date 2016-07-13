@@ -22,6 +22,7 @@ object ML {
     //    df.show()
     //    targetFeatures(df) //COMMENT OUT FOR NOW
 //    val map = Data.splitByAdvertiser(df, sqlContext)//COMMENT OUT FOR NOW
+    singleFeature(castTypes(df))
   }
 
   /**
@@ -46,7 +47,6 @@ object ML {
   def singleFeature(df: DataFrame){
     val weights = Array(0.8, 0.2)
     val seed = 11L
-    val df = castTypes(df)
 
     //mapping string columns to indices
     val indexer = new StringIndexer().setInputCol("AdSlotFormat").setOutputCol("AdSlotFormat-Index")
@@ -57,6 +57,7 @@ object ML {
     val encoder = new OneHotEncoder().setInputCol("AdSlotFormat-Index").setOutputCol("AdSlotFormat-Vector")
     val encoded = encoder.transform(indexed)
     //    encoded.select("Click", "AdSlotFormat-Vector").show()
+
 
   }
 
