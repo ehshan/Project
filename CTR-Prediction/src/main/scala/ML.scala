@@ -65,8 +65,12 @@ object ML {
     //splitting data-set into train and test sets
     val Array(trainingSet, testingSet) = labeledData.randomSplit(weights, seed)
     trainingSet.cache()
-    
 
+    //LR training algorithm
+    val lrModel = new LogisticRegressionWithLBFGS().run(trainingSet)
+
+    //clears threshold - so model can return probabilities
+    lrModel.clearThreshold()
   }
 
 }
