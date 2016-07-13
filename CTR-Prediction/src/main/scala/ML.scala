@@ -71,6 +71,13 @@ object ML {
 
     //clears threshold - so model can return probabilities
     lrModel.clearThreshold()
+
+    //predicting click on training set using results from LR algorithm
+    val Predictions = testingSet.map{
+      case LabeledPoint(label, features) =>
+        val prediction = lrModel.predict(features)
+        (prediction, label)
+    }
   }
 
 }
