@@ -183,6 +183,21 @@ object Data {
     showFrame(option)
   }
 
+  /**
+    * Method to get single data-frame for algorithm  testing
+    *
+    * @param sc
+    * @param sqlContext
+    * @return
+    */
+  def getSingleFrame(sc: SparkContext, sqlContext: SQLContext): DataFrame ={
+    val path = "D:\\_MSC_PROJECT\\written-data\\written-set\\3427.csv"
+
+    val df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .load(path)
+    df
+  }
+
 }
 /**
   * Object to override the initial date format for a calendar object
