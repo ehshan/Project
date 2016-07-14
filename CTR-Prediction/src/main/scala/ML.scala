@@ -94,16 +94,15 @@ object ML {
 
   /**
     * Helper Method to make a vector Assembler
-    *
     * @param df
     * @param target
     * @return
     */
-  def makeVectorAssembler(df: DataFrame,target: Array[String] ): VectorAssembler ={
+  def makeVectorAssembler(df: DataFrame,target: Array[String] ): DataFrame ={
 
     val assembler = new VectorAssembler().setInputCols(target.map(makeVectorColumn)).setOutputCol("features")
 
-    assembler
+    assembler.transform(df)
 
   }
 
@@ -142,7 +141,9 @@ object ML {
 
     val va = makeVectorAssembler(encodedData,creativeTarget)
 
+    val labeledData = makeLabelPoints(va, "features")
 
+    runLr(labeledData)
   }
 
   /**
