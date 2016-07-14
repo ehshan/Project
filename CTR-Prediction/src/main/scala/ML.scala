@@ -57,8 +57,6 @@ object ML {
     * @param df
     */
   def singleFeature(df: DataFrame){
-    val weights = Array(0.8, 0.2)
-    val seed = 11L
 
     //mapping string columns to indices
     val indexer = new StringIndexer().setInputCol("AdSlotFormat").setOutputCol("AdSlotFormat-Index")
@@ -73,12 +71,24 @@ object ML {
     //creating label points from data-frame
     val labeledData = makeLabelPoints(encoded,"AdSlotFormat-Vector")
 
+    //logistic regression training and testing algorithm
+    runLr(labeledData)
+  }
+
+  /**
+    * Logistic Regression training + test Algorithm
+    * @param rdd
+    */
+  def runLr(rdd: RDD[LabeledPoint]){
+    val weights = Array(0.8, 0.2)
+    val seed = 11L
+
     //splitting data-set into train and test sets
-    val Array(trainingSet, testingSet) = labeledData.randomSplit(weights, seed)
+    val Array(trainingSet, testingSet) = rdd.randomSplit(weights, seed)
     trainingSet.cache()
 
     //LR training algorithm
-    val lrModel = new LogisticRegressionWithLBFGS().run(trainingSet)
+    val lrModel = new LogisticRegressionWithLBFGS().setNumClasses(2).run(trainingSet)
 
     //clears threshold - so model can return probabilities
     lrModel.clearThreshold()
