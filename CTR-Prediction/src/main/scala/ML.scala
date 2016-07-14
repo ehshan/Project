@@ -3,6 +3,7 @@ import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
@@ -39,6 +40,18 @@ object ML {
   }
 
   /**
+    * Helper Method to create label point RDD from Data-frame
+    *
+    * @param df
+    * @return
+    */
+  def makeLabelPoints(df:DataFrame,col: String):RDD[LabeledPoint] ={
+    df.map{
+      row => LabeledPoint(row.getAs[Double]("Click"),row.getAs[Vector](col))
+    }
+  }
+
+  /**
     * Applying logistic regression algorithm using a single feature
     *
     * @param df
@@ -58,10 +71,7 @@ object ML {
     //    encoded.select("Click", "AdSlotFormat-Vector").show()
 
     //creating label points from data-frame
-    val labeledData = encoded.map{
-      row =>
-        LabeledPoint(row.getAs[Double]("Click"),row.getAs[Vector]("AdSlotFormat-Vector"))
-    }
+    val labeledData = makeLabelPoints(encoded,"AdSlotFormat-Vector")
 
     //splitting data-set into train and test sets
     val Array(trainingSet, testingSet) = labeledData.randomSplit(weights, seed)
