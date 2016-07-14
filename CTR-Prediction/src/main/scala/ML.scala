@@ -76,6 +76,15 @@ object ML {
   }
 
   /**
+    * Applying logistic regression algorithm to a vector of creative features
+    *
+    * @param df
+    */
+  def creativeFeatures(df: DataFrame){
+
+  }
+
+  /**
     * Logistic Regression training + test Algorithm
     * @param rdd
     */
