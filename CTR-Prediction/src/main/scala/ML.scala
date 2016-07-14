@@ -10,6 +10,12 @@ import org.apache.spark.{SparkContext, SparkConf}
 
 object ML {
 
+  /**
+    * Array of creative features to target
+    */
+  val creativeTarget = Array("AdSlotWidth","AdSlotHeight","AdSlotVisibility",
+    "AdSlotFormat","CreativeID")
+
   def main(args: Array[String]) {
 
     //spark engine config
@@ -49,6 +55,41 @@ object ML {
     df.map{
       row => LabeledPoint(row.getAs[Double]("Click"),row.getAs[Vector](col))
     }
+  }
+
+  /**
+    * Makes a index column for string-indexer
+    *
+    * @param col
+    * @return
+    */
+  def makeIndexColumn(col: String) = col + "-index"
+
+  /**
+    * Makes a vector column for one-hot-encoder
+    *
+    * @param col
+    * @return
+    */
+  def makeVectorColumn(col: String) = col + "-vector"
+  /**
+    * Helper Method encode Dataframe
+    *
+    * @param df
+    * @return
+    */
+  def encodeData(df: DataFrame, target: Array[String]):DataFrame ={
+    creativeTarget.foreach{
+      feature =>
+        val indexed = new StringIndexer()
+          .setInputCol(feature).setOutputCol(makeIndexColumn(feature)).setHandleInvalid("skip")
+          .fit(df).transform(df)
+        val encoder = new OneHotEncoder()
+          .setInputCol(makeIndexColumn(feature)).setOutputCol(makeVectorColumn(feature)).setDropLast(false)
+
+        encoder.transform(indexed)
+    }
+    df
   }
 
   /**
