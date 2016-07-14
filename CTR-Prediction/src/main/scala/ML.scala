@@ -1,4 +1,4 @@
-import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer}
+import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder, StringIndexer}
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 import org.apache.spark.mllib.linalg.Vector
@@ -93,6 +93,21 @@ object ML {
   }
 
   /**
+    * Helper Method to make a vector Assembler
+    *
+    * @param df
+    * @param target
+    * @return
+    */
+  def makeVectorAssembler(df: DataFrame,target: Array[String] ): VectorAssembler ={
+
+    val assembler = new VectorAssembler().setInputCols(target.map(makeVectorColumn)).setOutputCol("features")
+
+    assembler
+
+  }
+
+  /**
     * Applying logistic regression algorithm using a single feature
     *
     * @param df
@@ -122,6 +137,11 @@ object ML {
     * @param df
     */
   def creativeFeatures(df: DataFrame){
+
+    val encodedData = encodeData(df,creativeTarget)
+
+    val va = makeVectorAssembler(encodedData,creativeTarget)
+
 
   }
 
