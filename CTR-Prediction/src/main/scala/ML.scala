@@ -1,3 +1,5 @@
+import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder, StringIndexer}
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
@@ -48,6 +50,7 @@ object ML {
 
   /**
     * Method to split Data-frame into training and testing set
+    *
     * @param df
     * @return
     */
@@ -107,15 +110,16 @@ object ML {
 
   /**
     * Helper Method to make a vector Assembler
+    *
     * @param df
     * @param target
     * @return
     */
-  def makeVectorAssembler(df: DataFrame,target: Array[String] ): DataFrame ={
+  def makeVectorAssembler(df: DataFrame,target: Array[String] ): VectorAssembler ={
 
     val assembler = new VectorAssembler().setInputCols(target.map(makeVectorColumn)).setOutputCol("features")
 
-    assembler.transform(df)
+    assembler
 
   }
 
@@ -154,7 +158,9 @@ object ML {
 
     val va = makeVectorAssembler(encodedData,creativeTarget)
 
-    val labeledData = makeLabelPoints(va, "features")
+    val frame = va.transform(df)
+
+    val labeledData = makeLabelPoints(frame, "features")
 
     runLr(labeledData)
   }
@@ -165,10 +171,14 @@ object ML {
     val (trainingSet, testingSet) = splitData(encodedData)
 
     val va = makeVectorAssembler(encodedData,creativeTarget)
+
+    val lr = new LogisticRegression().setLabelCol("Click")
+    val pipeline = new Pipeline().setStages(Array(va, lr))
   }
 
   /**
     * Logistic Regression training + test Algorithm
+    *
     * @param rdd
     */
   def runLr(rdd: RDD[LabeledPoint]){
