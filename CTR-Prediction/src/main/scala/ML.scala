@@ -1,8 +1,9 @@
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder, StringIndexer}
 import org.apache.spark.ml.param.ParamMap
-import org.apache.spark.ml.tuning.ParamGridBuilder
+import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 import org.apache.spark.mllib.linalg.Vector
@@ -142,6 +143,21 @@ object ML {
   }
 
   /**
+    *
+    * @param pipeline
+    * @param paramGrid
+    * @return
+    */
+  def makeCrossValidator(pipeline: Pipeline, paramGrid: Array[ParamMap]): CrossValidator ={
+    val crossVal = new CrossValidator()
+      .setEstimator(pipeline)
+      .setEvaluator(new BinaryClassificationEvaluator().setLabelCol("Click"))
+      .setEstimatorParamMaps(paramGrid)
+      .setNumFolds(3)
+    crossVal
+  }
+
+  /**
     * Applying logistic regression algorithm using a single feature
     *
     * @param df
@@ -194,6 +210,8 @@ object ML {
     val pipeline = new Pipeline().setStages(Array(va, lr))
 
     val paramMap = makeParamGrid(lr)
+
+    val crossVal = makeCrossValidator(pipeline, paramMap)
   }
 
   /**
