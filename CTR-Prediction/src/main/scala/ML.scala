@@ -29,7 +29,7 @@ object ML {
   def run(sc: SparkContext, sqlContext: SQLContext) {
     val df = Data.getSingleFrame(sc, sqlContext)
     singleFeature(castTypes(df))
-    creativeFeatures(castTypes(df))
+    multiFeatures(castTypes(df))
   }
 
   /**
@@ -44,6 +44,18 @@ object ML {
       .drop("Click")
       .withColumnRenamed("clickTmp", "Click")
     castDf
+  }
+
+  /**
+    * Method to split Data-frame into training and testing set
+    * @param df
+    * @return
+    */
+  def splitData(df: DataFrame):(DataFrame,DataFrame)={
+    val weights = Array(0.8, 0.2)
+    val seed = 11L
+    val split = df.randomSplit(weights, seed)
+    (split(0),split(1))
   }
 
   /**
@@ -149,6 +161,8 @@ object ML {
 
   def multiFeaturesTuned(df:DataFrame){
     val encodedData = encodeData(df,creativeTarget)
+
+    val (trainingSet, testingSet) = splitData(encodedData)
 
     val va = makeVectorAssembler(encodedData,creativeTarget)
   }
