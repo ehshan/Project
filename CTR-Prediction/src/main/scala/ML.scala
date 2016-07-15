@@ -1,6 +1,8 @@
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder, StringIndexer}
+import org.apache.spark.ml.param.ParamMap
+import org.apache.spark.ml.tuning.ParamGridBuilder
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 import org.apache.spark.mllib.linalg.Vector
@@ -124,6 +126,22 @@ object ML {
   }
 
   /**
+    * Making a Parameter Map
+    *
+    * @param lr
+    * @return
+    */
+  def makeParamGrid(lr: LogisticRegression): Array[ParamMap] ={
+    val paramGrid = new ParamGridBuilder()
+      .addGrid(lr.regParam, Array(0.01))
+      .addGrid(lr.elasticNetParam, Array(0.0))
+      .addGrid(lr.fitIntercept, Array(x = false ))
+      .addGrid(lr.maxIter, Array(10))
+      .build()
+    paramGrid
+  }
+
+  /**
     * Applying logistic regression algorithm using a single feature
     *
     * @param df
@@ -174,6 +192,8 @@ object ML {
 
     val lr = new LogisticRegression().setLabelCol("Click")
     val pipeline = new Pipeline().setStages(Array(va, lr))
+
+    val paramMap = makeParamGrid(lr)
   }
 
   /**
