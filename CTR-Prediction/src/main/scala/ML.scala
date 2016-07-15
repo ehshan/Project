@@ -29,6 +29,7 @@ object ML {
   def run(sc: SparkContext, sqlContext: SQLContext) {
     val df = Data.getSingleFrame(sc, sqlContext)
     singleFeature(castTypes(df))
+    creativeFeatures(castTypes(df))
   }
 
   /**
@@ -135,7 +136,7 @@ object ML {
     *
     * @param df
     */
-  def creativeFeatures(df: DataFrame){
+  def multiFeatures(df: DataFrame){
 
     val encodedData = encodeData(df,creativeTarget)
 
@@ -144,6 +145,12 @@ object ML {
     val labeledData = makeLabelPoints(va, "features")
 
     runLr(labeledData)
+  }
+
+  def multiFeaturesTuned(df:DataFrame){
+    val encodedData = encodeData(df,creativeTarget)
+
+    val va = makeVectorAssembler(encodedData,creativeTarget)
   }
 
   /**
