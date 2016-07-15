@@ -212,6 +212,8 @@ object ML {
     val paramMap = makeParamGrid(lr)
 
     val crossVal = makeCrossValidator(pipeline, paramMap)
+
+    val cvModel = crossVal.fit(trainingSet)
   }
 
   /**
