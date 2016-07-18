@@ -91,13 +91,13 @@ object ML {
     * @return
     */
   def makeVectorColumn(col: String) = col + "-vector"
+
   /**
-    * Helper Method encode Dataframe
-    * ...Delete This
+    * Method to encode a single passed to column of labeled indices & vector column of indices
     * @param df
+    * @param column
     * @return
     */
-
   def singleColumnIndex(df: DataFrame,column: String): DataFrame = {
     val labelIndexer = new StringIndexer()
       .setInputCol(column)
@@ -116,6 +116,11 @@ object ML {
       .drop(makeIndexColumn(column))
   }
 
+  /**
+    * Pass multiple df columns for encoding
+    * @param df
+    * @return
+    */
   def multiColumnIndex(df:DataFrame):DataFrame = {
     creativeTarget.foldLeft(df) {
       case (df, col) => singleColumnIndex(df, col)
