@@ -97,19 +97,6 @@ object ML {
     * @param df
     * @return
     */
-  def encodeData(df: DataFrame, target: Array[String]):DataFrame ={
-    creativeTarget.foreach{
-      feature =>
-        val indexed = new StringIndexer()
-          .setInputCol(feature).setOutputCol(makeIndexColumn(feature)).setHandleInvalid("skip")
-          .fit(df).transform(df)
-        val encoder = new OneHotEncoder()
-          .setInputCol(makeIndexColumn(feature)).setOutputCol(makeVectorColumn(feature)).setDropLast(false)
-
-        encoder.transform(indexed)
-    }
-    df
-  }
 
   def singleColumnIndex(df: DataFrame,column: String): DataFrame = {
     val labelIndexer = new StringIndexer()
@@ -213,7 +200,7 @@ object ML {
     */
   def multiFeatures(df: DataFrame){
 
-    val encodedData = encodeData(df,creativeTarget)
+    val encodedData = multiColumnIndex(df)
 
     val va = makeVectorAssembler(encodedData,creativeTarget)
 
@@ -225,7 +212,7 @@ object ML {
   }
 
   def multiFeaturesTuned(df:DataFrame){
-    val encodedData = encodeData(df,creativeTarget)
+    val encodedData = multiColumnIndex(df)
 
     val (trainingSet, testingSet) = splitData(encodedData)
 
