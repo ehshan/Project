@@ -93,7 +93,7 @@ object ML {
   def makeVectorColumn(col: String) = col + "-vector"
   /**
     * Helper Method encode Dataframe
-    *
+    * ...Delete This
     * @param df
     * @return
     */
@@ -110,6 +110,31 @@ object ML {
     }
     df
   }
+
+  def singleColumnIndex(df: DataFrame,column: String): DataFrame = {
+    val labelIndexer = new StringIndexer()
+      .setInputCol(column)
+      .setOutputCol(makeIndexColumn(column))
+      .fit(df)
+      .transform(df)
+
+
+    val encoder = new OneHotEncoder()
+      .setDropLast(false)
+      .setInputCol(makeIndexColumn(column))
+      .setOutputCol(makeVectorColumn(column))
+
+    encoder.transform(labelIndexer)
+      .drop(column)
+      .drop(makeIndexColumn(column))
+  }
+
+  def multiColumnIndex(df:DataFrame):DataFrame = {
+    creativeTarget.foldLeft(df) {
+      case (df, col) => singleColumnIndex(df, col)
+    }
+  }
+
 
   /**
     * Helper Method to make a vector Assembler
