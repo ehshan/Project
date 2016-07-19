@@ -135,6 +135,23 @@ object Data {
     df.withColumn("TimeOfDay", timeFunc(df("Hour"))).cache()
   }
 
+  def viewsPerAdvertiser(df: DataFrame):DataFrame ={
+
+    val adViews = df.groupBy("iPinYouID","AdvertiserID").count()
+      .withColumnRenamed("count","TotalAdViews")
+      .withColumnRenamed("AdvertiserID","AdID2")
+
+    df.join(adViews,"iPinYouID")
+      .drop("AdID2")
+  }
+
+  def totalImpressions(df: DataFrame):DataFrame ={
+    val imps = df.groupBy("iPinYouID").count().distinct
+      .withColumnRenamed("count","TotalImpressions")
+
+    df.join(imps,"iPinYouID")
+  }
+
   def splitByAdvertiser(df: DataFrame, sQLContext: SQLContext): Map[Any, DataFrame] = {
     //TODO instantiate single instances of SQL and Spark Contexts
     import sQLContext.implicits._
