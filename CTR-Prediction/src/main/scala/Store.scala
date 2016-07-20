@@ -2,10 +2,16 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.{SQLContext, DataFrame}
 
 /**
-  * Created by Ehshan on 20/07/2016.
-  */
+  * @author Ehshan-Veerabangsa
+  **/
 object Store {
 
+  /**
+    * Splits a dataframe by advertiser, returns a map of DataFrames
+    * @param df
+    * @param sQLContext
+    * @return
+    */
   def splitByAdvertiser(df: DataFrame, sQLContext: SQLContext): Map[Any, DataFrame] = {
     //TODO instantiate single instances of SQL and Spark Contexts
     import sQLContext.implicits._
