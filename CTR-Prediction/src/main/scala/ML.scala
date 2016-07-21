@@ -139,7 +139,12 @@ object ML {
     }
   }
 
-  //For Hashing features with high cardinality
+  /**
+    * Method to hash features with high cardinality
+    * @param df
+    * @param column
+    * @return
+    */
   def singleColumnHash(df:DataFrame,column: String):DataFrame ={
     val tokenizer = new Tokenizer()
       .setInputCol(column)
@@ -155,6 +160,11 @@ object ML {
 
   }
 
+  /**
+    * Pass mutliple columns to feature hashing
+    * @param df
+    * @return
+    */
   def multiColumnHash(df:DataFrame):DataFrame = {
     hashedFeatures.foldLeft(df) {
       case (df, col) => singleColumnIndex(df, col)
