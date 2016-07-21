@@ -1,7 +1,7 @@
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
-import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder, StringIndexer}
+import org.apache.spark.ml.feature._
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
 import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS
@@ -21,6 +21,11 @@ object ML {
   val creativeTarget = Array("AdSlotWidth","AdSlotHeight","AdSlotVisibility",
     "AdSlotFormat","CreativeID")
 
+  /**
+    * Array of features to be hashed
+    */
+  val hashedFeatures = Array("iPinYouID","IP")
+
   def main(args: Array[String]) {
 
     //spark engine config
@@ -32,7 +37,7 @@ object ML {
   }
 
   def run(sc: SparkContext, sqlContext: SQLContext) {
-    val df = Data.getSingleFrame(sc, sqlContext)
+    val df = Store.getSingleFrame(sc, sqlContext)
     singleFeature(castTypes(df))
     multiFeatures(castTypes(df))
   }
@@ -93,6 +98,13 @@ object ML {
   def makeVectorColumn(col: String) = col + "-vector"
 
   /**
+    * Make a hashed column for string tokenizer
+    * @param col
+    * @return
+    */
+  def makeHashColumn(col: String) = col + "-hash"
+
+  /**
     * Method to encode a single passed to column of labeled indices & vector column of indices
     * @param df
     * @param column
@@ -123,6 +135,28 @@ object ML {
     */
   def multiColumnIndex(df:DataFrame):DataFrame = {
     creativeTarget.foldLeft(df) {
+      case (df, col) => singleColumnIndex(df, col)
+    }
+  }
+
+  //For Hashing features with high cardinality
+  def singleColumnHash(df:DataFrame,column: String):DataFrame ={
+    val tokenizer = new Tokenizer()
+      .setInputCol(column)
+      .setOutputCol(makeHashColumn(column))
+      .transform(df)
+
+    val hashingTF = new HashingTF()
+      .setInputCol(makeHashColumn(column))
+      .setOutputCol(makeVectorColumn(column))
+      .setNumFeatures(100)
+    //featurizing data
+    hashingTF.transform(tokenizer)
+
+  }
+
+  def multiColumnHash(df:DataFrame):DataFrame = {
+    hashedFeatures.foldLeft(df) {
       case (df, col) => singleColumnIndex(df, col)
     }
   }
