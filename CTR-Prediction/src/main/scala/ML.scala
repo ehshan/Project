@@ -26,21 +26,21 @@ object ML {
     */
   val hashedFeatures = Array("iPinYouID","IP")
 
-  def main(args: Array[String]) {
-
-    //spark engine config
-    val conf = new SparkConf().setAppName("ctr-prediction").setMaster("local")
-    val sc = new SparkContext(conf)
-    val sqlContext = new SQLContext(sc)
-
-    run(sc, sqlContext)
-  }
-
-  def run(sc: SparkContext, sqlContext: SQLContext) {
-    val df = Store.getSingleFrame(sc, sqlContext)
-    singleFeature(castTypes(df))
-    multiFeatures(castTypes(df))
-  }
+//  def main(args: Array[String]) {
+//
+//    //spark engine config
+//    val conf = new SparkConf().setAppName("ctr-prediction").setMaster("local")
+//    val sc = new SparkContext(conf)
+//    val sqlContext = new SQLContext(sc)
+//
+//    run(sc, sqlContext)
+//  }
+//
+//  def run(sc: SparkContext, sqlContext: SQLContext) {
+//    val df = Store.getSingleFrame(sc, sqlContext)
+//    singleFeature(castTypes(df))
+//    multiFeatures(castTypes(df))
+//  }
 
   /**
     * Helper method to cast click column from a string to a double
