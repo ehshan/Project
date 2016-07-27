@@ -125,6 +125,18 @@ object Data {
   }
 
   /**
+    * Methods to merge impression and click logs and remove duplicate records
+    * @param i
+    * @param c
+    * @param sqlContext
+    * @return
+    */
+  def mergeLogs(i: DataFrame, c: DataFrame, sqlContext: SQLContext): DataFrame={
+
+    i
+  }
+
+  /**
     * Create a click target variable and appends it to a data-frame
     */
   def createTarget(df: DataFrame): DataFrame = {
