@@ -75,6 +75,56 @@ object Data {
   }
 
   /**
+    * All impression logs to single DataFrame
+    *
+    * @param sc
+    * @param sqlContext
+    * @param schema
+    * @return
+    */
+  def buildImpFrame(sc: SparkContext, sqlContext: SQLContext, schema: StructType): DataFrame = {
+
+    //create data for all impression logs
+    val impSecond = path + "\\training2nd\\imp*"
+    val impThird = path + "\\training3rd\\imp*"
+
+    val idf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .schema(schema).option("delimiter", "\\t").load(impSecond)
+    val idf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .schema(schema).option("delimiter", "\\t").load(impThird)
+
+    val allImps = idf2.unionAll(idf3) //UNION ALL TO ADD ONE FRAME TO ANOTHER
+
+    allImps
+  }
+
+  /**
+    * All click logs to single DataFrame
+    *
+    * @param sc
+    * @param sqlContext
+    * @param schema
+    * @return
+    */
+  def buildClickFrame(sc: SparkContext, sqlContext: SQLContext, schema: StructType): DataFrame = {
+
+    //create data for all click logs
+    val clickSecond = path + "\\training2nd\\clk*"
+    val clickThird = path + "\\training3rd\\clk*"
+
+
+    val cdf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .schema(schema).option("delimiter", "\\t").load(clickSecond)
+    val cdf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
+      .schema(schema).option("delimiter", "\\t").load(clickThird)
+
+    val allClicks = cdf2.unionAll(cdf3) //UNION ALL TO ADD ONE FRAME TO ANOTHER
+
+    allClicks
+
+  }
+
+  /**
     * Create a click target variable and appends it to a data-frame
     */
   def createTarget(df: DataFrame): DataFrame = {
