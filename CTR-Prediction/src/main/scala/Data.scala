@@ -137,6 +137,13 @@ object Data {
     val imps = castLong(i)
     val clicks = castLong(c)
 
+    /**
+      * Helper method to check whether two timestamps are within 5 minutes of each other
+      * Impression falling within this range will represent the same bidding opportunity
+      * @param impTime
+      * @param clickTime
+      * @return
+      */
     def compareTime(impTime: Long, clickTime: Long): Boolean ={
       clickTime match {
         case x if impTime- 500000 until impTime + 500000 contains clickTime => true
