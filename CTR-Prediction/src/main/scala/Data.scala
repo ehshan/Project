@@ -137,6 +137,32 @@ object Data {
   }
 
   /**
+    * Method to cast the Timestamp field to a long for analysis
+    * @param df
+    * @return
+    */
+  def castLong(df: DataFrame): DataFrame={
+
+    /**
+      * Helper method to cast a string to a lond
+      * @param x
+      * @return
+      */
+    def stringToLong(x: String):Long={
+      x.toLong
+    }
+
+    val cast: (String => Long) = (arg: String) => stringToLong(arg)
+
+    val castFun = udf(cast)
+
+    df.withColumn("TS", castFun(df("Timestamp")))
+      .drop("Timestamp")
+      .withColumnRenamed("TS", "Timestamp")
+
+  }
+
+  /**
     * Create a click target variable and appends it to a data-frame
     */
   def createTarget(df: DataFrame): DataFrame = {
