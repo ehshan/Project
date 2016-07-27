@@ -137,6 +137,16 @@ object Data {
     val imps = castLong(i)
     val clicks = castLong(c)
 
+    def compareTime(impTime: Long, clickTime: Long): Boolean ={
+      clickTime match {
+        case x if impTime- 500000 until impTime + 500000 contains clickTime => true
+        case _ => false
+      }
+    }
+    val comp: ((Long, Long) => Boolean) = (arg1: Long, arg2:Long) => compareTime(arg1,arg2)
+
+    val mergFun = udf(comp)
+
     imps
   }
 
