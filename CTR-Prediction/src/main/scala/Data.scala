@@ -133,7 +133,11 @@ object Data {
     */
   def mergeLogs(i: DataFrame, c: DataFrame, sqlContext: SQLContext): DataFrame={
 
-    i
+    //casting timestamp to long
+    val imps = castLong(i)
+    val clicks = castLong(c)
+
+    imps
   }
 
   /**
