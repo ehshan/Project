@@ -156,7 +156,23 @@ object Data {
 
     sqlContext.udf.register("mergFun", comp)
 
-    imps
+    //temporary tables tp be evaluated by the SQL statement
+    imps.registerTempTable("b")
+    clicks.registerTempTable("a")
+
+    //SQL statement to join tables on BidID and apply time checking function to each row
+    val removeDuplicates: DataFrame = sqlContext.sql(
+      """
+        |SELECT b.*
+        |FROM b
+        |LEFT JOIN a ON a.BidID = b.BidID AND mergFun(a.Timestamp, b.Timestamp) <= true
+        |WHERE a.LogType IS NULL
+      """.stripMargin)
+
+    //merging the impression frame with duplicate click removed with the click frame
+    val result = removeDuplicates.unionAll(clicks)
+
+    result
   }
 
   /**
