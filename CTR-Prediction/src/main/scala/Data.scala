@@ -154,6 +154,8 @@ object Data {
 
     val mergFun = udf(comp)
 
+    sqlContext.udf.register("mergFun", comp)
+
     imps
   }
 
