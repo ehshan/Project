@@ -36,6 +36,11 @@ object Data {
 //    val map = splitByAdvertiser(df, sqlContext)
 //  }
 
+  /**
+    * Method to create a DataFrame schema from a text file
+    * @param file
+    * @return
+    */
   def buildSchema(file: String): StructType = {
     var schemaString = ""
 
