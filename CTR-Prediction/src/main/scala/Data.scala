@@ -183,7 +183,7 @@ object Data {
   def castLong(df: DataFrame): DataFrame={
 
     /**
-      * Helper method to cast a string to a lond
+      * Helper method to cast a string to a long
       * @param x
       * @return
       */
