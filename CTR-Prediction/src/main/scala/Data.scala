@@ -44,36 +44,6 @@ object Data {
     StructType(schemaString.split(" ").map(fieldName ⇒ StructField(fieldName, StringType, nullable = true)))
   }
 
-  def buildDataFrame(sc: SparkContext, sqlContext: SQLContext, schema: StructType): DataFrame = {
-    /*
-      create data-frame for all clicks
-    */
-    val clickSecond = path + "\\training2nd\\clk*"
-    val clickThird = path + "\\training3rd\\clk*"
-
-    val cdf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
-      .schema(schema).option("delimiter", "\\t").load(clickSecond).cache()
-    val cdf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
-      .schema(schema).option("delimiter", "\\t").load(clickThird).cache()
-
-    val allClicks = cdf2.unionAll(cdf3) //UNION ALL TO ADD ONE FRAME TO ANOTHER
-
-    /*
-      create data-frame for all impressions
-    */
-    val impSecond = path + "\\training2nd\\imp*"
-    val impThird = path + "\\training3rd\\imp*"
-
-    val idf2 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
-      .schema(schema).option("delimiter", "\\t").load(impSecond).cache()
-    val idf3 = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
-      .schema(schema).option("delimiter", "\\t").load(impThird).cache()
-
-    val allImps = idf2.unionAll(idf3) //UNION ALL TO ADD ONE FRAME TO ANOTHER
-
-    allImps.unionAll(allClicks) //joins all clicks and all imps
-  }
-
   /**
     * All impression logs to single DataFrame
     *
