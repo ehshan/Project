@@ -56,6 +56,17 @@ object Features {
     val timeFunc = udf(tod)
     df.withColumn("TimeOfDay", timeFunc(df("Hour"))).cache()
   }
+
+  def viewsPerAdvertiser(df: DataFrame):DataFrame ={
+
+    val adViews = df.groupBy("iPinYouID","AdvertiserID").count()
+      .withColumnRenamed("count","TotalAdViews")
+      .withColumnRenamed("AdvertiserID","AdID2")
+
+    df.join(adViews,"iPinYouID")
+      .drop("AdID2")
+  }
+
 }
 /**
   * Object to override the initial date format for a calendar object
