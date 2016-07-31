@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat
 import java.util.Calendar
 
 import org.apache.spark.sql.DataFrame
@@ -38,5 +39,13 @@ object Features {
     val calendar = Calendar.getInstance()
     calendar.setTime(date)
     calendar.get(field)
+  }
+}
+/**
+  * Object to override the initial date format for a calendar object
+  */
+object DateFormatter {
+  val formatter = new ThreadLocal[SimpleDateFormat]() {
+    override def initialValue(): SimpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSS")
   }
 }
