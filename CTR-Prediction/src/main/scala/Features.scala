@@ -67,6 +67,13 @@ object Features {
       .drop("AdID2")
   }
 
+  def totalImpressions(df: DataFrame):DataFrame ={
+    val imps = df.groupBy("iPinYouID").count().distinct
+      .withColumnRenamed("count","TotalImpressions")
+
+    df.join(imps,"iPinYouID")
+  }
+
 }
 /**
   * Object to override the initial date format for a calendar object
