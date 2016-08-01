@@ -14,6 +14,23 @@ object Data {
   //location of the data-change as appropriate
   val path = "D:\\_MSC_PROJECT\\datasets\\ipinyou-dataset\\ipinyou.contest.dataset"
 
+  def build(sc: SparkContext, sqlContext: SQLContext, path: String): DataFrame = {
+
+    //create the impression frame
+    val imps = buildImpFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema"))
+
+    //create the click frame
+    val click = buildClickFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema"))
+
+    //merge both frames
+    val merge = mergeLogs(imps,click,sqlContext)
+
+    //create the target variable
+    val df= createTarget(merge)
+
+    df
+  }
+
   /**
     * Method to create a DataFrame schema from a text file
     * @param file
