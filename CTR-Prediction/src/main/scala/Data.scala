@@ -11,9 +11,16 @@ import scala.io.Source
   **/
 object Data {
 
-  //location of the data-change as appropriate
+  //location of the data - change as appropriate
   val path = "D:\\_MSC_PROJECT\\datasets\\ipinyou-dataset\\ipinyou.contest.dataset"
 
+  /**
+    * Method to bulld a DataFrame with all log data for 2nd and 3rd seasons
+    * @param sc
+    * @param sqlContext
+    * @param path
+    * @return
+    */
   def build(sc: SparkContext, sqlContext: SQLContext, path: String): DataFrame = {
 
     //create the impression frame
