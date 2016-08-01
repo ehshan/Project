@@ -11,6 +11,11 @@ import org.apache.spark.sql.functions._
   */
 object Features {
 
+  /**
+    * Method to transform a timestamp to Year, Month, Day and Hour features
+    * @param df
+    * @return
+    */
   def transformTime(df: DataFrame): DataFrame = {
     //transformation functions
     val getYear: (String => Int) = (arg: String) => convertTime(arg, Calendar.YEAR)
@@ -41,6 +46,11 @@ object Features {
     calendar.get(field)
   }
 
+  /**
+    * Method to to group hour features
+    * @param df
+    * @return
+    */
   def timeOfDay(df: DataFrame): DataFrame = {
     def time(td: Int): String = {
       td match {
@@ -57,6 +67,11 @@ object Features {
     df.withColumn("TimeOfDay", timeFunc(df("Hour"))).cache()
   }
 
+  /**
+    * Method to calculate the number of time each user has seen an ad from a specific advertiser
+    * @param df
+    * @return
+    */
   def viewsPerAdvertiser(df: DataFrame):DataFrame ={
 
     val adViews = df.groupBy("iPinYouID","AdvertiserID").count()
@@ -67,6 +82,11 @@ object Features {
       .drop("AdID2")
   }
 
+  /**
+    * Method to calculate the total number of times a user has seen any ad
+    * @param df
+    * @return
+    */
   def totalImpressions(df: DataFrame):DataFrame ={
     val imps = df.groupBy("iPinYouID").count().distinct
       .withColumnRenamed("count","TotalImpressions")
