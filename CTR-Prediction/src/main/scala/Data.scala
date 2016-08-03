@@ -18,10 +18,10 @@ object Data {
     * Method to bulld a DataFrame with all log data for 2nd and 3rd seasons
     * @param sc
     * @param sqlContext
-    * @param path
+//    * @param path
     * @return
     */
-  def build(sc: SparkContext, sqlContext: SQLContext, path: String): DataFrame = {
+  def build(sc: SparkContext, sqlContext: SQLContext): DataFrame = {
 
     //create the impression frame
     val imps = buildImpFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema"))
