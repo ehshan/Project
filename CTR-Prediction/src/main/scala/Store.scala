@@ -31,7 +31,7 @@ object Store {
     * @param map
     */
   def saveByAdvertiser(map: Map[Any, DataFrame]){
-    map.values.foreach(i =>
+    map.keys.foreach(i =>
       map(i).write.format("com.databricks.spark.csv").option("header", "true")
         .save(Data.path+"\\"+i)
     )
