@@ -1,4 +1,4 @@
-import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer}
+import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder, StringIndexer}
 import org.apache.spark.sql.DataFrame
 
 /**
@@ -45,6 +45,21 @@ object ModelData {
     features.foldLeft(df) {
       case (df, col) => singleBinaryFeature(df, col)
     }
+  }
+
+  /**
+    * Helper Method to make a vector Assembler
+    *
+    * @param df
+    * @param target
+    * @return
+    */
+  def makeVectorAssembler(df: DataFrame,target: Array[String] ): VectorAssembler ={
+
+    val assembler = new VectorAssembler().setInputCols(target.map(makeVectorColumn)).setOutputCol("features")
+
+    assembler
+
   }
 
   /**
