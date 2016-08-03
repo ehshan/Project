@@ -173,8 +173,8 @@ object Data {
     val castFun = udf(cast)
 
     df.withColumn("TS", castFun(df("Timestamp")))
-      .drop("Timestamp")
-      .withColumnRenamed("TS", "Timestamp")
+//      .drop("Timestamp")
+//      .withColumnRenamed("TS", "Timestamp")
 
   }
 
