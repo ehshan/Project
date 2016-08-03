@@ -275,6 +275,13 @@ object ML {
     val crossVal = makeCrossValidator(pipeline, paramMap)
 
     val cvModel = crossVal.fit(trainingSet)
+
+    //ACCURACY MEASUREMENT
+    val cvPrediction = cvModel.transform(testingSet).select("label","prediction")
+    val acc = cvPrediction.filter(cvPrediction("label") === cvPrediction("prediction"))
+    val res = acc.count() / cvPrediction.count().toFloat// produces a float num
+
+    print("The model accuracy: "+res)
   }
 
   /**
