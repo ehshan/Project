@@ -6,6 +6,10 @@ import org.apache.spark.sql.DataFrame
   */
 object ModelData {
 
+  //Array of feature for ml models
+  val features = Array("AdSlotWidth","AdSlotHeight","AdSlotVisibility",
+    "AdSlotFormat","CreativeID","City","Region","Hour","TotalAdViews","TotalImpressions")
+
   /**
     * Method to encode a single passed to column of labeled indices & vector column of indices
     *
@@ -29,6 +33,18 @@ object ModelData {
     encoder.transform(labelIndexer)
       .drop(column)
       .drop(makeIndexColumn(column))
+  }
+
+  /**
+    * Pass multiple df columns for encoding
+    *
+    * @param df
+    * @return
+    */
+  def multiBinaryFeatures(df:DataFrame):DataFrame = {
+    features.foldLeft(df) {
+      case (df, col) => singleBinaryFeature(df, col)
+    }
   }
 
   /**
