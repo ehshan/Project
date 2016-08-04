@@ -11,7 +11,7 @@ object ModelData {
     "AdSlotFormat","CreativeID","City","Region","Hour","TotalAdViews","TotalImpressions")
 
   /**
-    * Method to create a set of binary features
+    * Method to create a data-frame of binary features
     *
     * @param df
     * @return
@@ -63,6 +63,23 @@ object ModelData {
     features.foldLeft(df) {
       case (df, col) => singleBinaryFeature(df, col)
     }
+  }
+
+  /**
+    * Transforms string column to labeled indices
+    *
+    * @param df
+    * @param column
+    * @return
+    */
+  def singleNumericFeature(df: DataFrame,column: String): DataFrame = {
+    val labelIndexer = new StringIndexer()
+      .setInputCol(column)
+      .setOutputCol(makeVectorColumn(column))
+      .fit(df)
+      .transform(df)
+
+    labelIndexer.drop(column)
   }
 
   /**
