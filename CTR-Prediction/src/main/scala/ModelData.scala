@@ -11,6 +11,24 @@ object ModelData {
     "AdSlotFormat","CreativeID","City","Region","Hour","TotalAdViews","TotalImpressions")
 
   /**
+    * Method to create a set of binary features
+    *
+    * @param df
+    * @return
+    */
+  def binaryFeatures(df: DataFrame): DataFrame ={
+    val clean = dropNonFeatures(df)
+
+    val encodedData = multiBinaryFeatures(clean)
+
+    val va = makeVectorAssembler(encodedData,features)
+
+    val frame = va.transform(encodedData)
+
+    frame
+  }
+
+  /**
     * Method to encode a single passed to column of labeled indices & vector column of indices
     *
     * @param df
