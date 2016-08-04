@@ -1,4 +1,4 @@
-import org.apache.spark.ml.feature.{VectorAssembler, OneHotEncoder, StringIndexer}
+import org.apache.spark.ml.feature._
 import org.apache.spark.sql.DataFrame
 
 /**
@@ -112,6 +112,27 @@ object ModelData {
     features.foldLeft(df) {
       case (df, col) => singleNumericFeature(df, col)
     }
+  }
+
+  /**
+    * Method to hash features with high cardinality
+    * @param df
+    * @param column
+    * @return
+    */
+  def singleColumnHash(df:DataFrame,column: String):DataFrame ={
+    val tokenizer = new Tokenizer()
+      .setInputCol(column)
+      .setOutputCol(makeHashColumn(column))
+      .transform(df)
+
+    val hashingTF = new HashingTF()
+      .setInputCol(makeHashColumn(column))
+      .setOutputCol(makeVectorColumn(column))
+      .setNumFeatures(100)
+    //featurizing data
+    hashingTF.transform(tokenizer)
+
   }
 
   /**
