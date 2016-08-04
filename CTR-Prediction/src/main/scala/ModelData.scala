@@ -146,6 +146,13 @@ object ModelData {
   def makeVectorColumn(col: String) = col + "-vector"
 
   /**
+    * Make a hashed column for string tokenizer
+    * @param col
+    * @return
+    */
+  def makeHashColumn(col: String) = col + "-hashed"
+
+  /**
     * Method to remove non-relevant features from dataFrame
     *
     * @param df
