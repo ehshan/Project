@@ -136,6 +136,17 @@ object ModelData {
   }
 
   /**
+    * Pass mutliple columns to feature hashing
+    * @param df
+    * @return
+    */
+  def multiColumnHash(df:DataFrame):DataFrame = {
+    hashedFeatures.foldLeft(df) {
+      case (df, col) => singleColumnHash(df, col)
+    }
+  }
+
+  /**
     * Helper Method to make a vector Assembler
     *
     * @param df
