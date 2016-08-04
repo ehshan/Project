@@ -78,4 +78,15 @@ object ModelData {
     */
   def makeVectorColumn(col: String) = col + "-vector"
 
+  /**
+    * Method to remove non-relevant features from dataFrame
+    *
+    * @param df
+    * @return
+    */
+  def dropNonFeatures(df: DataFrame): DataFrame ={
+    df.drop("BidID").drop("iPinYouID").drop("IP").drop("AdExchange").drop("URL").drop("AnonymousURLID").
+      drop("AdSlotID").drop("AdSlotFloorPrice").drop("BiddingPrice").drop("BiddingPrice").drop("PayingPrice")
+      .drop("KeyPageURL").drop("AdvertiserID").drop("UserTags").drop("Timestamp")
+  }
 }
