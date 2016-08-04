@@ -29,6 +29,24 @@ object ModelData {
   }
 
   /**
+    * Methods to transform a dataFrame of categorical features to one of numerical features
+    *
+    * @param df
+    * @return
+    */
+  def numericFeatures(df: DataFrame): DataFrame ={
+    val clean = dropNonFeatures(df)
+
+    val encodedData = multiNumericFeatures(clean)
+
+    val va = makeVectorAssembler(encodedData,features)
+
+    val frame = va.transform(encodedData)
+
+    frame
+  }
+
+  /**
     * Method to encode a single passed to column of labeled indices & vector column of indices
     *
     * @param df
