@@ -10,6 +10,8 @@ object ModelData {
   val features = Array("AdSlotWidth","AdSlotHeight","AdSlotVisibility",
     "AdSlotFormat","CreativeID","City","Region","Hour","TotalAdViews","TotalImpressions")
 
+  val hashedFeatures = Array("UserAgent","Domain")
+
   /**
     * Method to create a data-frame of binary features
     *
