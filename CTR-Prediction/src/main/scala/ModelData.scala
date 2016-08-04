@@ -66,7 +66,7 @@ object ModelData {
   }
 
   /**
-    * Transforms string column to labeled indices
+    * Transforms string column to indices
     *
     * @param df
     * @param column
@@ -80,6 +80,18 @@ object ModelData {
       .transform(df)
 
     labelIndexer.drop(column)
+  }
+
+  /**
+    * Pass multiple df columns for encoding to indices
+    *
+    * @param df
+    * @return
+    */
+  def multiNumericFeatures(df:DataFrame):DataFrame = {
+    features.foldLeft(df) {
+      case (df, col) => singleNumericFeature(df, col)
+    }
   }
 
   /**
