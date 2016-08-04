@@ -3,6 +3,8 @@ import org.apache.spark.sql.DataFrame
 
 /**
   * Object to transform data for prediction models
+  *
+  * @author Ehshan-Veerabangsa
   */
 object ModelData {
 
