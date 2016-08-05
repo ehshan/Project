@@ -1,3 +1,5 @@
+import java.io.PrintWriter
+
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
@@ -205,13 +207,62 @@ object ML {
     }
 
     // creating metric object for evaluation
-    val brMetric = new BinaryClassificationMetrics(predictions)
+    val bcMetric = new BinaryClassificationMetrics(predictions)
+
+    saveResults(bcMetric)
+  }
+
+  /**
+    * Method to write the results of each model to file
+    * @param metric
+    */
+  def saveResults(metric: BinaryClassificationMetrics){
+
+    //getting values
 
     //using ROC as metric to compare actual click with predicted ones
-    val roc = brMetric.areaUnderROC()
+    val roc = metric.areaUnderROC()
+    println("Area under ROC = " +roc)
 
-    //printing results
-    println(roc)
+    // AUPRC
+    val auPRC =  metric.areaUnderPR
+    println("Area under precision-recall curve = " + auPRC)
+
+    // Precision by threshold
+    val precision = metric.precisionByThreshold
+    precision.foreach { case (t, p) =>
+      println(s"Threshold: $t, Precision: $p")
+    }
+
+    // Recall by threshold
+    val recall = metric.recallByThreshold
+    recall.foreach { case (t, r) =>
+      println(s"Threshold: $t, Recall: $r")
+    }
+
+    //WRITING TO FILE
+
+    //RESULTS PATH
+    val resultsPath = ""
+
+    val pw = new PrintWriter(resultsPath)
+
+    pw.write("Area under ROC = " +roc+ "\r\n")
+    pw.write("Area under precision-recall curve = " + auPRC+ "\r\n")
+
+    //COLLECTED TO ARRAY, SERIALIZABLE
+    val pcol = precision.collect()
+    val rcol = recall.collect()
+
+    pcol.foreach{ case (t, r) =>
+      pw.write(s"Threshold: $t, Recall: $r"+ "\r\n")
+    }
+
+    rcol.foreach{ case (t, r) =>
+      pw.write(s"Threshold: $t, Recall: $r"+ "\r\n")
+    }
+
+    pw.close()
   }
 
 }
