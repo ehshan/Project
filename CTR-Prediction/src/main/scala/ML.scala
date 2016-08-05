@@ -242,7 +242,7 @@ object ML {
     //WRITING TO FILE
 
     //RESULTS PATH
-    val resultsPath = ""
+    val resultsPath = "Model-Results"
 
     val pw = new PrintWriter(resultsPath)
 
