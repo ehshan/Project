@@ -217,8 +217,7 @@ object ML {
     * @param metric
     */
   def saveResults(metric: BinaryClassificationMetrics){
-
-    //getting values
+    //GETTING VALUES
 
     //using ROC as metric to compare actual click with predicted ones
     val roc = metric.areaUnderROC()
@@ -246,6 +245,8 @@ object ML {
     val resultsPath = ""
 
     val pw = new PrintWriter(resultsPath)
+
+    pw.write("NEW RESULTS BATCH\r\n\r\n")
 
     pw.write("Area under ROC = " +roc+ "\r\n")
     pw.write("Area under precision-recall curve = " + auPRC+ "\r\n")
