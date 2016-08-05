@@ -21,10 +21,6 @@ object ML {
   val creativeTarget = Array("AdSlotWidth","AdSlotHeight","AdSlotVisibility",
     "AdSlotFormat","CreativeID")
 
-  /**
-    * Array of features to be hashed
-    */
-  val hashedFeatures = Array("iPinYouID","IP")
 
 //  def main(args: Array[String]) {
 //
@@ -97,12 +93,6 @@ object ML {
     */
   def makeVectorColumn(col: String) = col + "-vector"
 
-  /**
-    * Make a hashed column for string tokenizer
-    * @param col
-    * @return
-    */
-  def makeHashColumn(col: String) = col + "-hash"
 
   /**
     * Method to encode a single passed to column of labeled indices & vector column of indices
@@ -138,39 +128,6 @@ object ML {
       case (df, col) => singleColumnIndex(df, col)
     }
   }
-
-  /**
-    * Method to hash features with high cardinality
-    * @param df
-    * @param column
-    * @return
-    */
-  def singleColumnHash(df:DataFrame,column: String):DataFrame ={
-    val tokenizer = new Tokenizer()
-      .setInputCol(column)
-      .setOutputCol(makeHashColumn(column))
-      .transform(df)
-
-    val hashingTF = new HashingTF()
-      .setInputCol(makeHashColumn(column))
-      .setOutputCol(makeVectorColumn(column))
-      .setNumFeatures(100)
-    //featurizing data
-    hashingTF.transform(tokenizer)
-
-  }
-
-  /**
-    * Pass mutliple columns to feature hashing
-    * @param df
-    * @return
-    */
-  def multiColumnHash(df:DataFrame):DataFrame = {
-    hashedFeatures.foldLeft(df) {
-      case (df, col) => singleColumnIndex(df, col)
-    }
-  }
-
 
   /**
     * Helper Method to make a vector Assembler
