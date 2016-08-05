@@ -78,73 +78,6 @@ object ML {
   }
 
   /**
-    * Makes a index column for string-indexer
-    *
-    * @param col
-    * @return
-    */
-  def makeIndexColumn(col: String) = col + "-index"
-
-  /**
-    * Makes a vector column for one-hot-encoder
-    *
-    * @param col
-    * @return
-    */
-  def makeVectorColumn(col: String) = col + "-vector"
-
-
-  /**
-    * Method to encode a single passed to column of labeled indices & vector column of indices
-    * @param df
-    * @param column
-    * @return
-    */
-  def singleColumnIndex(df: DataFrame,column: String): DataFrame = {
-    val labelIndexer = new StringIndexer()
-      .setInputCol(column)
-      .setOutputCol(makeIndexColumn(column))
-      .fit(df)
-      .transform(df)
-
-
-    val encoder = new OneHotEncoder()
-      .setDropLast(false)
-      .setInputCol(makeIndexColumn(column))
-      .setOutputCol(makeVectorColumn(column))
-
-    encoder.transform(labelIndexer)
-      .drop(column)
-      .drop(makeIndexColumn(column))
-  }
-
-  /**
-    * Pass multiple df columns for encoding
-    * @param df
-    * @return
-    */
-  def multiColumnIndex(df:DataFrame):DataFrame = {
-    creativeTarget.foldLeft(df) {
-      case (df, col) => singleColumnIndex(df, col)
-    }
-  }
-
-  /**
-    * Helper Method to make a vector Assembler
-    *
-    * @param df
-    * @param target
-    * @return
-    */
-  def makeVectorAssembler(df: DataFrame,target: Array[String] ): VectorAssembler ={
-
-    val assembler = new VectorAssembler().setInputCols(target.map(makeVectorColumn)).setOutputCol("features")
-
-    assembler
-
-  }
-
-  /**
     * Making a Parameter Map
     *
     * @param lr
@@ -206,23 +139,27 @@ object ML {
     */
   def multiFeatures(df: DataFrame){
 
-    val encodedData = multiColumnIndex(df)
-
-    val va = makeVectorAssembler(encodedData,creativeTarget)
-
-    val frame = va.transform(df)
-
-    val labeledData = makeLabelPoints(frame, "features")
+    val labeledData = makeLabelPoints(df, "features")
 
     runLr(labeledData)
   }
 
   def multiFeaturesTuned(df:DataFrame){
-    val encodedData = multiColumnIndex(df)
+
+    val clean = ModelData.dropNonFeatures(df)
+
+    val encodedData = ModelData.multiBinaryFeatures(clean)
 
     val (trainingSet, testingSet) = splitData(encodedData)
 
-    val va = makeVectorAssembler(encodedData,creativeTarget)
+    val va = ModelData.makeVectorAssembler(encodedData,ModelData.features)
+
+//    val v = va.transform(testingSet)
+//    val encodedData = multiColumnIndex(df)
+//
+//    val (trainingSet, testingSet) = splitData(encodedData)
+//
+//    val va = makeVectorAssembler(encodedData,creativeTarget)
 
     val lr = new LogisticRegression().setLabelCol("Click")
     val pipeline = new Pipeline().setStages(Array(va, lr))
