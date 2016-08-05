@@ -183,7 +183,7 @@ object Data {
     */
   def createTarget(df: DataFrame): DataFrame = {
     //function which maps LogType to click boolean
-    val click: (String => Int) = (arg: String) => if (arg != "1") 1 else 0
+    val click: (String => Double) = (arg: String) => if (arg != "1") 1.0 else 0.0
 
     //make an sql function option (udf - user defined function)
     val clickFunc = udf(click)
