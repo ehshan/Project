@@ -39,6 +39,77 @@ object ML {
 //    singleFeature(castTypes(df))
 //    multiFeatures(castTypes(df))
 //  }
+  /**
+    * Applying logistic regression model - using a single feature
+    *
+    * @param df
+    */
+  def lrModelSingle(df: DataFrame){
+
+    //mapping string columns to indices
+    val indexer = new StringIndexer().setInputCol("AdSlotFormat").setOutputCol("AdSlotFormat-Index")
+    val indexed = indexer.fit(df).transform(df)
+
+    //converting a categorical feature to a binary vector
+    val encoder = new OneHotEncoder().setInputCol("AdSlotFormat-Index").setOutputCol("AdSlotFormat-Vector")
+    val encoded = encoder.transform(indexed)
+
+    //creating label points from data-frame
+    val labeledData = makeLabelPoints(encoded,"AdSlotFormat-Vector")
+
+    //logistic regression training and testing algorithm
+    runLr(labeledData)
+  }
+
+  /**
+    * Applying logistic regression model to a vector of creative features
+    *
+    * @param df
+    */
+  def lrModel(df: DataFrame){
+
+    val labeledData = makeLabelPoints(df, "features")
+
+    runLr(labeledData)
+  }
+
+  /**
+    * Logistic Regression model using pipeline for parameter optimisation
+    * @param df
+    */
+  def lrModelTuned(df:DataFrame){
+
+    val clean = ModelData.dropNonFeatures(df)
+
+    val encodedData = ModelData.multiBinaryFeatures(clean)
+
+    val (trainingSet, testingSet) = splitData(encodedData)
+
+    val va = ModelData.makeVectorAssembler(encodedData,ModelData.features)
+
+    //    val v = va.transform(testingSet)
+    //    val encodedData = multiColumnIndex(df)
+    //
+    //    val (trainingSet, testingSet) = splitData(encodedData)
+    //
+    //    val va = makeVectorAssembler(encodedData,creativeTarget)
+
+    val lr = new LogisticRegression().setLabelCol("Click")
+    val pipeline = new Pipeline().setStages(Array(va, lr))
+
+    val paramMap = makeParamGrid(lr)
+
+    val crossVal = makeCrossValidator(pipeline, paramMap)
+
+    val cvModel = crossVal.fit(trainingSet)
+
+    //ACCURACY MEASUREMENT
+    val cvPrediction = cvModel.transform(testingSet).select("label","prediction")
+    val acc = cvPrediction.filter(cvPrediction("label") === cvPrediction("prediction"))
+    val res = acc.count() / cvPrediction.count().toFloat// produces a float num
+
+    print("The model accuracy: "+res)
+  }
 
   /**
     * Helper method to cast click column from a string to a double
@@ -110,75 +181,6 @@ object ML {
     crossVal
   }
 
-  /**
-    * Applying logistic regression algorithm using a single feature
-    *
-    * @param df
-    */
-  def singleFeature(df: DataFrame){
-
-    //mapping string columns to indices
-    val indexer = new StringIndexer().setInputCol("AdSlotFormat").setOutputCol("AdSlotFormat-Index")
-    val indexed = indexer.fit(df).transform(df)
-    //    indexed.show()
-
-    //converting a categorical feature to a binary vector
-    val encoder = new OneHotEncoder().setInputCol("AdSlotFormat-Index").setOutputCol("AdSlotFormat-Vector")
-    val encoded = encoder.transform(indexed)
-    //    encoded.select("Click", "AdSlotFormat-Vector").show()
-
-    //creating label points from data-frame
-    val labeledData = makeLabelPoints(encoded,"AdSlotFormat-Vector")
-
-    //logistic regression training and testing algorithm
-    runLr(labeledData)
-  }
-
-  /**
-    * Applying logistic regression algorithm to a vector of creative features
-    *
-    * @param df
-    */
-  def lrModel(df: DataFrame){
-
-    val labeledData = makeLabelPoints(df, "features")
-
-    runLr(labeledData)
-  }
-
-  def lrModelTuned(df:DataFrame){
-
-    val clean = ModelData.dropNonFeatures(df)
-
-    val encodedData = ModelData.multiBinaryFeatures(clean)
-
-    val (trainingSet, testingSet) = splitData(encodedData)
-
-    val va = ModelData.makeVectorAssembler(encodedData,ModelData.features)
-
-//    val v = va.transform(testingSet)
-//    val encodedData = multiColumnIndex(df)
-//
-//    val (trainingSet, testingSet) = splitData(encodedData)
-//
-//    val va = makeVectorAssembler(encodedData,creativeTarget)
-
-    val lr = new LogisticRegression().setLabelCol("Click")
-    val pipeline = new Pipeline().setStages(Array(va, lr))
-
-    val paramMap = makeParamGrid(lr)
-
-    val crossVal = makeCrossValidator(pipeline, paramMap)
-
-    val cvModel = crossVal.fit(trainingSet)
-
-    //ACCURACY MEASUREMENT
-    val cvPrediction = cvModel.transform(testingSet).select("label","prediction")
-    val acc = cvPrediction.filter(cvPrediction("label") === cvPrediction("prediction"))
-    val res = acc.count() / cvPrediction.count().toFloat// produces a float num
-
-    print("The model accuracy: "+res)
-  }
 
   /**
     * Logistic Regression training + test Algorithm
