@@ -139,7 +139,7 @@ object ML {
     *
     * @param df
     */
-  def multiFeatures(df: DataFrame){
+  def lrModel(df: DataFrame){
 
     val labeledData = makeLabelPoints(df, "features")
 
