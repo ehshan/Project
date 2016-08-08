@@ -15,6 +15,11 @@ import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkContext, SparkConf}
 
+/**
+  * Object to create prediction models
+  *
+  * @author Ehshan-Veerabangsa
+  */
 object ML {
 
   /**
