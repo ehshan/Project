@@ -87,10 +87,10 @@ object ML {
     */
   def makeParamGrid(lr: LogisticRegression): Array[ParamMap] ={
     val paramGrid = new ParamGridBuilder()
-      .addGrid(lr.regParam, Array(0.01))
-      .addGrid(lr.elasticNetParam, Array(0.0))
-      .addGrid(lr.fitIntercept, Array(x = false ))
-      .addGrid(lr.maxIter, Array(10))
+      .addGrid(lr.regParam, Array(0.01,0.1,1.0))
+      .addGrid(lr.elasticNetParam, Array(0.0,0.8,1.0))
+      .addGrid(lr.fitIntercept, Array(x = false))
+      //.addGrid(lr.maxIter, Array(10,20))
       .build()
     paramGrid
   }
