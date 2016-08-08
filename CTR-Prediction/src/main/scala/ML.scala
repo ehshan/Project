@@ -1,8 +1,8 @@
 import java.io.PrintWriter
 
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.classification.LogisticRegression
-import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
+import org.apache.spark.ml.classification.{RandomForestClassifier, LogisticRegression}
+import org.apache.spark.ml.evaluation.{MulticlassClassificationEvaluator, BinaryClassificationEvaluator}
 import org.apache.spark.ml.feature._
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
@@ -146,7 +146,7 @@ object ML {
     runLr(labeledData)
   }
 
-  def multiFeaturesTuned(df:DataFrame){
+  def lrModelTuned(df:DataFrame){
 
     val clean = ModelData.dropNonFeatures(df)
 
