@@ -79,6 +79,38 @@ object ML {
   }
 
   /**
+    * Logistic Regression training + test Algorithm
+    *
+    * @param rdd
+    */
+  def runLr(rdd: RDD[LabeledPoint]){
+    val weights = Array(0.8, 0.2)
+    val seed = 11L
+
+    //splitting data-set into train and test sets
+    val Array(trainingSet, testingSet) = rdd.randomSplit(weights, seed)
+    trainingSet.cache()
+
+    //LR training algorithm
+    val lrModel = new LogisticRegressionWithLBFGS().setNumClasses(2).run(trainingSet)
+
+    //clears threshold - so model can return probabilities
+    lrModel.clearThreshold()
+
+    //predicting click on training set using results from LR algorithm
+    val predictions = testingSet.map{
+      case LabeledPoint(label, features) =>
+        val prediction = lrModel.predict(features)
+        (prediction, label)
+    }
+
+    // creating metric object for evaluation
+    val bcMetric = new BinaryClassificationMetrics(predictions)
+
+    saveResults(bcMetric)
+  }
+
+  /**
     * Logistic Regression model using pipeline for parameter optimisation
     * @param df
     */
@@ -186,38 +218,6 @@ object ML {
     crossVal
   }
 
-
-  /**
-    * Logistic Regression training + test Algorithm
-    *
-    * @param rdd
-    */
-  def runLr(rdd: RDD[LabeledPoint]){
-    val weights = Array(0.8, 0.2)
-    val seed = 11L
-
-    //splitting data-set into train and test sets
-    val Array(trainingSet, testingSet) = rdd.randomSplit(weights, seed)
-    trainingSet.cache()
-
-    //LR training algorithm
-    val lrModel = new LogisticRegressionWithLBFGS().setNumClasses(2).run(trainingSet)
-
-    //clears threshold - so model can return probabilities
-    lrModel.clearThreshold()
-
-    //predicting click on training set using results from LR algorithm
-    val predictions = testingSet.map{
-      case LabeledPoint(label, features) =>
-        val prediction = lrModel.predict(features)
-        (prediction, label)
-    }
-
-    // creating metric object for evaluation
-    val bcMetric = new BinaryClassificationMetrics(predictions)
-
-    saveResults(bcMetric)
-  }
 
   /**
     * Method to write the results of each model to file
