@@ -11,9 +11,15 @@ object Run {
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
-    val df = Store.getSingleFrame(sc, sqlContext)
+    //PRE-PROCESS DATA
+    val df = Data.build(sc,sqlContext)
 
-    ML.singleFeature(ML.castTypes(df))
-    ML.multiFeatures(ML.castTypes(df))
+    //FEATURE EXTRACTION
+    val so = Features.addSecondOrder(df)
+
+    //FEATURE TRANSFORMATION
+    val binarySet = ModelData.binaryFeatures(so)
+    val numSet = ModelData.numericalFeatures(so)
+
   }
 }
