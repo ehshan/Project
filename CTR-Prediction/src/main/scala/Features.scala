@@ -11,6 +11,22 @@ import org.apache.spark.sql.functions._
   */
 object Features {
 
+
+  /**
+    * Method to transform data-frame and add all second order features
+    * @param df
+    * @return
+    */
+  def addSecondOrder(df: DataFrame):DataFrame ={
+    val timeTrans = transformTime(df)
+
+    val totalImps =  totalImpressions(timeTrans)
+
+    val result = viewsPerAdvertiser(totalImps)
+
+    result
+  }
+
   /**
     * Method to transform a timestamp to Year, Month, Day and Hour features
     * @param df
