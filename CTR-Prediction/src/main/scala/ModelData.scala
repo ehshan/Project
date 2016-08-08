@@ -38,7 +38,7 @@ object ModelData {
     * @param df
     * @return
     */
-  def numericFeatures(df: DataFrame): DataFrame ={
+  def numericalFeatures(df: DataFrame): DataFrame ={
     val clean = dropNonFeatures(df)
 
     val encodedData = multiNumericFeatures(clean)
