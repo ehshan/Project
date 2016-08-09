@@ -1,8 +1,8 @@
 import java.io.PrintWriter
 
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.classification.{RandomForestClassifier, LogisticRegression}
-import org.apache.spark.ml.evaluation.{MulticlassClassificationEvaluator, BinaryClassificationEvaluator}
+import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature._
 import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.tuning.{CrossValidator, ParamGridBuilder}
@@ -11,9 +11,8 @@ import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.DoubleType
-import org.apache.spark.sql.{DataFrame, SQLContext}
-import org.apache.spark.{SparkContext, SparkConf}
 
 /**
   * Object to create prediction models
@@ -125,12 +124,18 @@ object ML {
 
     val cvModel = crossVal.fit(trainingSet)
 
+    //EVALUATING TEST SET ON MODEL
+    val cvTransformed = cvModel.transform(testingSet)
+
     //ACCURACY MEASUREMENT
-    val cvPrediction = cvModel.transform(testingSet).select("label","prediction")
+    val cvPrediction = cvTransformed.select("label","prediction")
     val acc = cvPrediction.filter(cvPrediction("label") === cvPrediction("prediction"))
     val res = acc.count() / cvPrediction.count().toFloat// produces a float num
 
     print("The model accuracy: "+res)
+
+    //PROBABILITY
+    val cvProbs = cvTransformed.select("label","prediction")
   }
 
   /**
