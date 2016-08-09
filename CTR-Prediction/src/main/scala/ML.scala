@@ -139,6 +139,8 @@ object ML {
     //PROBABILITY
     val cvProbability = cvTransformed.select("label","prediction")
 
+    val probDf = splitProbability(cvProbability)
+
   }
 
   /**
