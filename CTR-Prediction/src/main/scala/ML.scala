@@ -12,6 +12,7 @@ import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.DoubleType
 
 /**
@@ -96,6 +97,7 @@ object ML {
 
   /**
     * Logistic Regression model using pipeline for parameter optimisation
+    *
     * @param df
     */
   def lrModelTuned(df:DataFrame){
@@ -135,7 +137,8 @@ object ML {
     print("The model accuracy: "+res)
 
     //PROBABILITY
-    val cvProbs = cvTransformed.select("label","prediction")
+    val cvProbability = cvTransformed.select("label","prediction")
+
   }
 
   /**
@@ -208,9 +211,22 @@ object ML {
     crossVal
   }
 
+  def splitProbability(df: DataFrame): DataFrame ={
+    //SPLITS THE PROBABILITY TO CLICK/NO-CLICK PROBABILITIES
+    val no: (Vector => (Double)) = (arg: Vector) => arg(0)
+    val yes:(Vector => (Double)) = (arg: Vector) => arg(1)
+
+    val noClickProb = udf(no)
+    val clickProb = udf(yes)
+
+    df.withColumn("No-Click-Probability", noClickProb(df("Probability")))
+      .withColumn("Month", clickProb(df("Probability")))
+  }
+
 
   /**
     * Method to write the results of each model to file
+    *
     * @param metric
     */
   def saveResults(metric: BinaryClassificationMetrics){
