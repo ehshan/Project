@@ -130,16 +130,26 @@ object ML {
     val cvTransformed = cvModel.transform(testingSet)
 
     //ACCURACY MEASUREMENT
-    val cvPrediction = cvTransformed.select("label","prediction")
-    val acc = cvPrediction.filter(cvPrediction("label") === cvPrediction("prediction"))
-    val res = acc.count() / cvPrediction.count().toFloat// produces a float num
-
-    print("The model accuracy: "+res)
+//    val cvPrediction = cvTransformed.select("label","prediction")
+//    val acc = cvPrediction.filter(cvPrediction("label") === cvPrediction("prediction"))
+//    val res = acc.count() / cvPrediction.count().toFloat// produces a float num
+//
+//    print("The model accuracy: "+res)
 
     //PROBABILITY
     val cvProbability = cvTransformed.select("label","probability")
 
     val probDf = splitProbability(cvProbability)
+
+
+    //RESULTS OF GRID SEARCH
+    cvModel.getEstimatorParamMaps.zip(cvModel.avgMetrics).foreach(println)
+
+    //BEST PARAMETERS
+    println("Best set of parameters found:" + cvModel.getEstimatorParamMaps
+      .zip(cvModel.avgMetrics)
+      .maxBy(_._2)
+      ._1)
 
   }
 
