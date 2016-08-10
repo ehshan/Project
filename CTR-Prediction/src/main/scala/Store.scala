@@ -1,5 +1,8 @@
+import java.io.PrintWriter
+
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.{SQLContext, DataFrame}
+import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
+import org.apache.spark.sql.{DataFrame, SQLContext}
 
 /**
   * @author Ehshan-Veerabangsa
@@ -73,6 +76,43 @@ object Store {
     val df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
       .load(path)
     df
+  }
+
+  /**
+    * Method to write results to file
+    *
+    * @param metric
+    */
+  def saveModelResults(metric: BinaryClassificationMetrics){
+    //GETTING VALUES
+
+    val roc = metric.areaUnderROC()//AUROC
+    val auPRC =  metric.areaUnderPR//AUPRC
+    val precision = metric.precisionByThreshold// Precision by threshold
+    val recall = metric.recallByThreshold// Recall by threshold
+
+    //WRITING TO FILE
+
+    val resultsPath = "Model-Results"
+    val pw = new PrintWriter(resultsPath)
+
+    pw.write("NEW RESULTS BATCH\r\n\r\n")
+    pw.write("Area under ROC = " +roc+ "\r\n")
+    pw.write("Area under precision-recall curve = " + auPRC+ "\r\n")
+
+    //COLLECTED TO ARRAY, SERIALIZABLE
+    val pcol = precision.collect()
+    val rcol = recall.collect()
+
+    pcol.foreach{ case (t, r) =>
+      pw.write(s"Threshold: $t, Recall: $r"+ "\r\n")
+    }
+
+    rcol.foreach{ case (t, r) =>
+      pw.write(s"Threshold: $t, Recall: $r"+ "\r\n")
+    }
+
+    pw.close()
   }
 
 }
