@@ -137,7 +137,7 @@ object ML {
     print("The model accuracy: "+res)
 
     //PROBABILITY
-    val cvProbability = cvTransformed.select("label","prediction")
+    val cvProbability = cvTransformed.select("label","probability")
 
     val probDf = splitProbability(cvProbability)
 
