@@ -1,5 +1,3 @@
-import java.io.PrintWriter
-
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.LogisticRegression
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
@@ -92,7 +90,7 @@ object ML {
     // creating metric object for evaluation
     val bcMetric = new BinaryClassificationMetrics(predictions)
 
-    saveResults(bcMetric)
+    Store.saveModelResults(bcMetric)
   }
 
   /**
@@ -141,7 +139,6 @@ object ML {
 
     val probDf = splitProbability(cvProbability)
 
-
     //RESULTS OF GRID SEARCH
     cvModel.getEstimatorParamMaps.zip(cvModel.avgMetrics).foreach(println)
 
@@ -150,7 +147,6 @@ object ML {
       .zip(cvModel.avgMetrics)
       .maxBy(_._2)
       ._1)
-
   }
 
   /**
@@ -241,60 +237,5 @@ object ML {
       .withColumn("Month", clickProb(df("Probability")))
   }
 
-
-  /**
-    * Method to write the results of each model to file
-    *
-    * @param metric
-    */
-  def saveResults(metric: BinaryClassificationMetrics){
-    //GETTING VALUES
-
-    //using ROC as metric to compare actual click with predicted ones
-    val roc = metric.areaUnderROC()
-    println("Area under ROC = " +roc)
-
-    // AUPRC
-    val auPRC =  metric.areaUnderPR
-    println("Area under precision-recall curve = " + auPRC)
-
-    // Precision by threshold
-    val precision = metric.precisionByThreshold
-    precision.foreach { case (t, p) =>
-      println(s"Threshold: $t, Precision: $p")
-    }
-
-    // Recall by threshold
-    val recall = metric.recallByThreshold
-    recall.foreach { case (t, r) =>
-      println(s"Threshold: $t, Recall: $r")
-    }
-
-    //WRITING TO FILE
-
-    //RESULTS PATH
-    val resultsPath = "Model-Results"
-
-    val pw = new PrintWriter(resultsPath)
-
-    pw.write("NEW RESULTS BATCH\r\n\r\n")
-
-    pw.write("Area under ROC = " +roc+ "\r\n")
-    pw.write("Area under precision-recall curve = " + auPRC+ "\r\n")
-
-    //COLLECTED TO ARRAY, SERIALIZABLE
-    val pcol = precision.collect()
-    val rcol = recall.collect()
-
-    pcol.foreach{ case (t, r) =>
-      pw.write(s"Threshold: $t, Recall: $r"+ "\r\n")
-    }
-
-    rcol.foreach{ case (t, r) =>
-      pw.write(s"Threshold: $t, Recall: $r"+ "\r\n")
-    }
-
-    pw.close()
-  }
 
 }
