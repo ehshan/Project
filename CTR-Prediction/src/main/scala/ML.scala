@@ -100,7 +100,7 @@ object ML {
     *
     * @param df
     */
-  def lrModelTuned(df:DataFrame){
+  def tuneLR(df:DataFrame){
 
     val clean = ModelData.dropNonFeatures(df)
 
@@ -156,7 +156,7 @@ object ML {
     *
     * @param df
     */
-  def optimalLG(df: DataFrame) {
+  def optimalLR(df: DataFrame) {
 
     val path = "Optimal-LG-Model.txt"
 
