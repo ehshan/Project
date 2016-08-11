@@ -129,6 +129,7 @@ object ML {
     def printlnMetric(metricName: String): String = {
       metricName + " = " + binaryClassificationEvaluator.setMetricName(metricName).evaluate(cvTransformed)
     }
+
     println("Area Under Curve: "+printlnMetric("areaUnderROC"))
     println("Area Under Precision Recall: "+printlnMetric("areaUnderPR"))
 
@@ -145,6 +146,27 @@ object ML {
       .zip(cvModel.avgMetrics)
       .maxBy(_._2)
       ._1)
+  }
+
+
+  /**
+    * Optimal Logistical Regression Model
+    *
+    * @param df
+    */
+  def optimalLG(df: DataFrame) {
+
+    val prepedData = ModelData.binaryFeatures(df)
+
+    //USING THE OPTIMAL PARAMETER FOUND IN CROSS VALIDATION MODEL
+    val lr = new LogisticRegression()
+      .setLabelCol("Click")
+      .setElasticNetParam(0.0)
+      .setRegParam(0.01)
+      .setFitIntercept(false)
+
+    val lrModel = lr.fit(prepedData)
+
   }
 
   /**
