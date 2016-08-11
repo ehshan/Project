@@ -1,5 +1,7 @@
+import java.io.PrintWriter
+
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression}
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature._
 import org.apache.spark.ml.param.ParamMap
@@ -156,7 +158,9 @@ object ML {
     */
   def optimalLG(df: DataFrame) {
 
-    val prepedData = ModelData.binaryFeatures(df)
+    val path = "Optimal-LG-Model.txt"
+
+    val preppedData = ModelData.binaryFeatures(df)
 
     //USING THE OPTIMAL PARAMETER FOUND IN CROSS VALIDATION MODEL
     val lr = new LogisticRegression()
@@ -165,7 +169,28 @@ object ML {
       .setRegParam(0.01)
       .setFitIntercept(false)
 
-    val lrModel = lr.fit(prepedData)
+    val lrModel = lr.fit(preppedData)
+
+    val trainingSummary = lrModel.summary
+
+    val binarySummary = trainingSummary.asInstanceOf[BinaryLogisticRegressionSummary]
+
+    //PRINTING THE TRAINING RESULTS
+    val pw = new PrintWriter(path)
+
+    pw.write("Area under ROC: "+binarySummary.areaUnderROC+"\r\n")
+
+    pw.close()
+
+    val precision = binarySummary.precisionByThreshold
+    val recall = binarySummary.recallByThreshold
+
+    //WRITE PRECISION AND RECALL DATA TO FILE
+    precision.coalesce(1).write.format("com.databricks.spark.csv").option("header", "true")
+      .save("precision-by-threshold")
+
+    recall.coalesce(1).write.format("com.databricks.spark.csv").option("header", "true")
+      .save("recall-by-threshold")
 
   }
 
@@ -256,6 +281,5 @@ object ML {
     df.withColumn("No-Click-Probability", noClickProb(df("Probability")))
       .withColumn("Month", clickProb(df("Probability")))
   }
-
 
 }
