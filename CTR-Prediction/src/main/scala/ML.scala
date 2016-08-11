@@ -192,6 +192,8 @@ object ML {
     recall.coalesce(1).write.format("com.databricks.spark.csv").option("header", "true")
       .save("recall-by-threshold")
 
+    lrModel.save("LogisticRegressionModel")
+
   }
 
   /**
