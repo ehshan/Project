@@ -108,14 +108,8 @@ object ML {
 
     val va = ModelData.makeVectorAssembler(encodedData,ModelData.features)
 
-    //    val v = va.transform(testingSet)
-    //    val encodedData = multiColumnIndex(df)
-    //
-    //    val (trainingSet, testingSet) = splitData(encodedData)
-    //
-    //    val va = makeVectorAssembler(encodedData,creativeTarget)
-
     val lr = new LogisticRegression().setLabelCol("Click")
+
     val pipeline = new Pipeline().setStages(Array(va, lr))
 
     val paramMap = makeParamGrid(lr)
@@ -127,12 +121,16 @@ object ML {
     //EVALUATING TEST SET ON MODEL
     val cvTransformed = cvModel.transform(testingSet)
 
-    //ACCURACY MEASUREMENT
-//    val cvPrediction = cvTransformed.select("label","prediction")
-//    val acc = cvPrediction.filter(cvPrediction("label") === cvPrediction("prediction"))
-//    val res = acc.count() / cvPrediction.count().toFloat// produces a float num
-//
-//    print("The model accuracy: "+res)
+    val binaryClassificationEvaluator = new BinaryClassificationEvaluator()
+      .setLabelCol("Click")
+      .setRawPredictionCol("rawPrediction")
+
+    //GET METRIC VALUES
+    def printlnMetric(metricName: String): String = {
+      metricName + " = " + binaryClassificationEvaluator.setMetricName(metricName).evaluate(cvTransformed)
+    }
+    println("Area Under Curve: "+printlnMetric("areaUnderROC"))
+    println("Area Under Precision Recall: "+printlnMetric("areaUnderPR"))
 
     //PROBABILITY
     val cvProbability = cvTransformed.select("label","probability")
