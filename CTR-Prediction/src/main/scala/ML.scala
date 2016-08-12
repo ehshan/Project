@@ -204,6 +204,11 @@ object ML {
 
     val (trainingSet, testingSet) = splitData(df)
 
+    val labelIndexer = new StringIndexer()
+      .setInputCol("Click")
+      .setOutputCol("clickLabel")
+      .fit(df)
+
     val rf = new RandomForestClassifier()
       .setNumTrees(10)
       .setMaxDepth(2)
