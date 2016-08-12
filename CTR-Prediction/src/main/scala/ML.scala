@@ -226,6 +226,9 @@ object ML {
       .setFeaturesCol("indexedFeatures")
       .setNumTrees(10)
       .setMaxDepth(2)
+
+    val pipeline = new Pipeline()
+      .setStages(Array(clickIndexer, featureIndexer, rf, clickConverter))
   }
 
   /**
