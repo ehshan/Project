@@ -1,7 +1,7 @@
 import java.io.PrintWriter
 
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression}
+import org.apache.spark.ml.classification.{RandomForestClassifier, BinaryLogisticRegressionSummary, LogisticRegression}
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature._
 import org.apache.spark.ml.param.ParamMap
@@ -200,7 +200,14 @@ object ML {
     * Test a Random Forest Model
     * @param df
     */
-  def runRF(df: DataFrame){}
+  def runRF(df: DataFrame): Unit ={
+
+    val (trainingSet, testingSet) = splitData(df)
+
+    val rf = new RandomForestClassifier()
+      .setNumTrees(10)
+      .setMaxDepth(2)
+  }
 
   /**
     * Helper method to cast click column from a string to a double
