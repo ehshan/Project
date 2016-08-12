@@ -222,6 +222,8 @@ object ML {
       .setLabels(clickIndexer.labels)
 
     val rf = new RandomForestClassifier()
+      .setLabelCol("clickLabel")
+      .setFeaturesCol("indexedFeatures")
       .setNumTrees(10)
       .setMaxDepth(2)
   }
