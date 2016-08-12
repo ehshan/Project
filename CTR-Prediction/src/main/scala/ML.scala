@@ -204,9 +204,16 @@ object ML {
 
     val (trainingSet, testingSet) = splitData(df)
 
-    val labelIndexer = new StringIndexer()
+    //TELLS CLASSIFIER NUMBER OF EXPECTED CLASSES
+    val clickIndexer = new StringIndexer()
       .setInputCol("Click")
       .setOutputCol("clickLabel")
+      .fit(df)
+
+    val featureIndexer = new VectorIndexer()
+      .setInputCol("features")
+      .setOutputCol("indexedFeatures")
+      .setMaxCategories(10)
       .fit(df)
 
     val rf = new RandomForestClassifier()
