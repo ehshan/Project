@@ -216,6 +216,11 @@ object ML {
       .setMaxCategories(10)
       .fit(df)
 
+    val clickConverter = new IndexToString()
+      .setInputCol("prediction")
+      .setOutputCol("predictedLabel")
+      .setLabels(clickIndexer.labels)
+
     val rf = new RandomForestClassifier()
       .setNumTrees(10)
       .setMaxDepth(2)
