@@ -197,6 +197,12 @@ object ML {
   }
 
   /**
+    * Test a Random Forest Model
+    * @param df
+    */
+  def runRF(df: DataFrame){}
+
+  /**
     * Helper method to cast click column from a string to a double
     *
     * @param df
