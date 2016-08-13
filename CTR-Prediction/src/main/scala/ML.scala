@@ -234,6 +234,10 @@ object ML {
 
     //GETTING THE PREDICTIONS
     val predictions = model.transform(testingSet)
+
+    val bcEval = new BinaryClassificationEvaluator()
+      .setLabelCol("clickLabel")
+      .setRawPredictionCol("rawPrediction")
   }
 
   /**
