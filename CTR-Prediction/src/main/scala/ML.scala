@@ -238,6 +238,9 @@ object ML {
     val bcEval = new BinaryClassificationEvaluator()
       .setLabelCol("clickLabel")
       .setRawPredictionCol("rawPrediction")
+
+    val auROC = bcEval.setMetricName("areaUnderROC").evaluate(predictions)
+    val auPR = bcEval.setMetricName("areaUnderPR").evaluate(predictions)
   }
 
   /**
