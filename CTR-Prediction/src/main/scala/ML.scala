@@ -229,6 +229,8 @@ object ML {
 
     val pipeline = new Pipeline()
       .setStages(Array(clickIndexer, featureIndexer, rf, clickConverter))
+
+    val model = pipeline.fit(trainingSet)
   }
 
   /**
