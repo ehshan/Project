@@ -231,6 +231,9 @@ object ML {
       .setStages(Array(clickIndexer, featureIndexer, rf, clickConverter))
 
     val model = pipeline.fit(trainingSet)
+
+    //GETTING THE PREDICTIONS
+    val predictions = model.transform(testingSet)
   }
 
   /**
