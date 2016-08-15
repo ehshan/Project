@@ -239,8 +239,18 @@ object ML {
       .setLabelCol("clickLabel")
       .setRawPredictionCol("rawPrediction")
 
+    //GETTING MEASURES
     val auROC = bcEval.setMetricName("areaUnderROC").evaluate(predictions)
     val auPR = bcEval.setMetricName("areaUnderPR").evaluate(predictions)
+
+    //PRINTING RESULTS
+    val path = "random-forest-results"
+    val pw = new PrintWriter(path)
+
+    pw.write("Area Under Curve: "+auROC+"\r\n")
+    pw.write("Area Under Precision Recall: "+auPR+"\r\n")
+
+    pw.close()
   }
 
   /**
