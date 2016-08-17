@@ -197,10 +197,11 @@ object ML {
   }
 
   /**
-    * Test a Random Forest Model
+    * A random forest model using a pipeline - can set dept manually
     * @param df
+    * @param dept
     */
-  def runRF(df: DataFrame): Unit ={
+  def runRF(df: DataFrame, dept: Int): Unit ={
 
     val (trainingSet, testingSet) = splitData(df)
 
@@ -225,7 +226,7 @@ object ML {
       .setLabelCol("clickLabel")
       .setFeaturesCol("indexedFeatures")
       .setNumTrees(10)
-      .setMaxDepth(2)
+      .setMaxDepth(dept)
 
     val pipeline = new Pipeline()
       .setStages(Array(clickIndexer, featureIndexer, rf, clickConverter))
