@@ -34,4 +34,16 @@ class Bid extends Algorithim{
     fixedBidPrice
   }
 
+  /**
+    * Return a Random Bid between max and min bid prices
+    * @return
+    */
+  def getRandomBid:Int={
+    val max = 300
+    val min = 0
+    val rnd = scala.util.Random
+
+    min + rnd.nextInt( (max - min) + 1 )
+  }
+
 }
