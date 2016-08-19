@@ -15,11 +15,23 @@ class Bid extends Algorithim{
   val fixedBidPrice = 100
 
 
+  /**
+    * A Bid Response
+    * @param bidRequest
+    * @return
+    */
   def getBidPrice(bidRequest: BidRequest):Int={
 
     0
 
   }
 
+  /**
+    * Returns a fixed bid amount
+    * @return
+    */
+  def getConstantBid:Int={
+    fixedBidPrice
+  }
 
 }
