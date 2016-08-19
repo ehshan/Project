@@ -1,6 +1,17 @@
-/**
-  * Created by Ehshan on 19/08/2016.
-  */
-class Bid {
+sealed trait Algorithim {
+
+  def getBidPrice(bidRequest: BidRequest): Int
+
+}
+
+class Bid extends Algorithim{
+
+
+  def getBidPrice(bidRequest: BidRequest):Int={
+
+    0
+
+  }
+
 
 }
