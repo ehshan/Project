@@ -24,16 +24,21 @@ object BidEngine {
   }
 
   /**
-    * Returns the Bid Request Object for winning bid only
+    * Returns the Bid Request Object for winning bids only
     *
     * @param s
     * @return
     */
   def handleRequest(s: String): BidRequest={
     val request = BidRequest(s)
+    val marketPrice = request.payingPrice
 
-    request
+    val bid = new Bid
+    val ourBid = bid.getConstantBid
 
+    val bidOption = if (marketPrice < ourBid) request else null
+
+    bidOption
   }
 
 
