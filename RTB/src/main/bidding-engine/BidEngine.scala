@@ -2,9 +2,6 @@ import java.io.{FileInputStream, BufferedInputStream}
 
 import scala.io.Source
 
-/**
-  * Created by Ehshan on 20/08/2016.
-  */
 object BidEngine {
 
   //SESSION-3
@@ -39,6 +36,16 @@ object BidEngine {
     val bidOption = if (marketPrice < ourBid) request else null
 
     bidOption
+  }
+
+  /**
+    * Method to convert the Bidding session results to a sequence
+    *
+    * @return
+    */
+  def convertToSeq(): Seq[BidRequest]={
+    val result = runSession().toSeq
+    result
   }
 
 
