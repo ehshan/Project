@@ -60,6 +60,10 @@ object BidEngine {
 
     val wins = result.filter(x => x.isInstanceOf[BidRequest])
 
+    val winCount = wins.length
+
+    val clicks = getClicks(wins)
+
   }
 
   /**
@@ -70,6 +74,14 @@ object BidEngine {
     Source.fromFile(path).getLines().size
   }
 
+  /**
+    * Count the number of click won in bidding session
+    * @param bids
+    * @return
+    */
+  def getClicks(bids: Seq[BidRequest]):Int ={
 
+    bids.foldLeft(0)((accum, bid) => accum + bid.clicks)
+  }
 
 }
