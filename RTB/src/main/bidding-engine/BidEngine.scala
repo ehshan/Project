@@ -111,5 +111,17 @@ object BidEngine {
     bids.foldLeft(0)((accum, bid) => accum + bid.clicks)
   }
 
+  /**
+    * Method to return the time of the bidding session
+    * @param f
+    * @return
+    */
+  def time(f: => Unit)={
+    val s = System.currentTimeMillis
+    f
+    System.currentTimeMillis - s
+  }
+
+
 
 }
