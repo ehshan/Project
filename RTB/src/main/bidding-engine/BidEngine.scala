@@ -62,6 +62,8 @@ object BidEngine {
 
     val winCount = wins.length
 
+    val spend = getSpend(wins)
+
     val clicks = getClicks(wins)
 
   }
@@ -74,6 +76,22 @@ object BidEngine {
     Source.fromFile(path).getLines().size
   }
 
+
+  /**
+    * Helper method to return the total bidding prices of a sequence of bid request
+    *
+    * @param bids
+    * @return
+    */
+  def getSpend(bids: Seq[BidRequest]):Int ={
+
+    //Aggressive
+    //bids.foldLeft(0)((accum, bid) => accum + bid.biddingPrice)
+
+    //normal
+    bids.foldLeft(0)((accum, bid) => accum + bid.payingPrice)
+  }
+
   /**
     * Count the number of click won in bidding session
     * @param bids
@@ -83,5 +101,6 @@ object BidEngine {
 
     bids.foldLeft(0)((accum, bid) => accum + bid.clicks)
   }
+
 
 }
