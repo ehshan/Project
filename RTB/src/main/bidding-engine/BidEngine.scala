@@ -48,5 +48,15 @@ object BidEngine {
     result
   }
 
+  /**
+    * Evaluates each bidding session
+    */
+  def eval(): Unit ={
+
+    val result = convertToSeq()
+
+
+  }
+
 
 }
