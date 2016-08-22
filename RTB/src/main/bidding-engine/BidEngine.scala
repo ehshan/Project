@@ -55,6 +55,7 @@ object BidEngine {
 
     val result = convertToSeq()
 
+    val wins = result.filter(x => x.isInstanceOf[BidRequest])
 
   }
 
