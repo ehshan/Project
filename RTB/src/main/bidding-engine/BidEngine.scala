@@ -55,9 +55,21 @@ object BidEngine {
 
     val result = convertToSeq()
 
+    //TOTAL NUMBER OF AUCTIONS
+    val totalRequests = totalRecords()
+
     val wins = result.filter(x => x.isInstanceOf[BidRequest])
 
   }
+
+  /**
+    * Method to get the total number of bid requests
+    * @return
+    */
+  def totalRecords():Int ={
+    Source.fromFile(path).getLines().size
+  }
+
 
 
 }
