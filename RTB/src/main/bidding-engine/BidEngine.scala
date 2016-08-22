@@ -66,6 +66,10 @@ object BidEngine {
 
     val clicks = getClicks(wins)
 
+    val ctr = clicks.toFloat/winCount
+
+    val cpc = spend.toFloat/clicks
+
   }
 
   /**
