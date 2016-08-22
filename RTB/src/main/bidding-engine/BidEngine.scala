@@ -70,6 +70,11 @@ object BidEngine {
 
     val cpc = spend.toFloat/clicks
 
+    println("Bidding session ended, processing results...")
+    println("-----------------------------------------------------------------------------------------------------------------------------")
+    println("| Total Request: "+totalRequests+"| Total Wins: "+winCount+"| Total Spend: "+spend+" | Total Clicks: "+clicks+" | CTR: "+ctr+" | CPC "+cpc+" |")
+    println("-----------------------------------------------------------------------------------------------------------------------------")
+
   }
 
   /**
