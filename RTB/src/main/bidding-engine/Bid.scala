@@ -22,7 +22,13 @@ class Bid extends Algorithim{
     */
   def getBidPrice(bidRequest: BidRequest):Int={
 
-    0
+    val ctr = bidRequest.ctr
+
+    val percent = ((ctr * 100.0f) / baseCTR)/100
+
+    val price = (baseBid * percent).toInt
+
+    price
 
   }
 
