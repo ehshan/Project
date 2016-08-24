@@ -2,6 +2,7 @@ import java.io.PrintWriter
 
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, SQLContext}
 
 /**
@@ -11,6 +12,7 @@ object Store {
 
   /**
     * Splits a dataframe by advertiser, returns a map of DataFrames
+    *
     * @param df
     * @param sQLContext
     * @return
@@ -113,6 +115,49 @@ object Store {
     }
 
     pw.close()
+  }
+
+  /**
+    * Method to store feature config values for bidding engine
+    *
+    * @param df
+    */
+  def writeConfigValues(df: DataFrame){
+    //TO SINGLE FILE
+    val path = ""
+
+    val city = df.groupBy("City").agg(avg("Click"))
+    city.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\city")
+
+    val region = df.groupBy("Region").agg(avg("Click"))
+    region.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\region")
+
+    val exc = df.groupBy("AdExchange").agg(avg("Click"))
+    exc.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\adExchange")
+
+    //average CTR for all creativeIDs
+    val creative = df.groupBy("CreativeID").agg(avg("Click"))
+    creative.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\creativeID")
+
+    //average CTR for all Ad widths
+    val width = df.groupBy("AdSlotWidth").agg(avg("Click"))
+    width.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\adSlotWidth")
+
+    //average CTR for all Ad heights
+    val height = df.groupBy("AdSlotHeight").agg(avg("Click"))
+    height.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\adSlotHeight")
+
+    //average CTR for all Ad format
+    val format = df.groupBy("AdSlotFormat").agg(avg("Click"))
+    format.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\adSlotFormat")
+
+    //average CTR for all Ad page positions
+    val visibility = df.groupBy("AdSlotVisibility").agg(avg("Click"))
+    visibility.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\adSlotVisibility")
+
+    val id = df.groupBy("AdvertiserID").agg(avg("Click"))
+    id.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\advertiserID")
+
   }
 
 }
