@@ -2,9 +2,6 @@ import java.io.{FileInputStream, BufferedInputStream}
 
 import scala.io.Source
 
-/**
-  * Created by Ehshan on 24/08/2016.
-  */
 object BidConfig {
 
   val features = Array("region","city","adExchange","adSlotWidth","adSlotHeight","adSlotVisibility",
@@ -32,5 +29,17 @@ object BidConfig {
 
   }
 
+  /**
+    * Method to get the CTR from a Bid Request of a particular feature value
+    *
+    * @param str
+    * @param bidRequest
+    * @param map
+    * @return
+    */
+  def getCTR(str: String,bidRequest: BidRequest,map: Map[String,Double]): Double = {
+
+    0
+  }
 
 }
