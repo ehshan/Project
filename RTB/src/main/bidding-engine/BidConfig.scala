@@ -7,6 +7,7 @@ object BidConfig {
   val features = Array("region","city","adExchange","adSlotWidth","adSlotHeight","adSlotVisibility",
     "adSlotFormat","creativeID")
 
+  //path to config files
   val path = "F:\\_MSC_PROJECT\\project-data\\bid-config\\"
 
   /**
@@ -85,7 +86,8 @@ object BidConfig {
     //this is the raw filed value from BidRequest - same as if taken from object getter
     val feature = unpackField(fields.get(str)).toString
 
+    val ctr = if (map.contains(feature)) unpack(map.get(feature)) else 0.0
 
-    0
+    ctr
   }
 }
