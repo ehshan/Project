@@ -39,6 +39,22 @@ object BidConfig {
     */
   def getCTR(str: String,bidRequest: BidRequest,map: Map[String,Double]): Double = {
 
+    //using reflection to get fields
+    //we have to do Any here as bidRequest fields are of several types
+    /**
+      * Helper method using scala reflection to get the fields and values in BidRequest object
+      *
+      * @param obj
+      * @return
+      */
+    def getFields(obj: Any): Map[String, Any] = {
+      val fieldsAsPairs = for (field <- obj.getClass.getDeclaredFields) yield {
+        field.setAccessible(true)
+        (field.getName, field.get(obj))
+      }
+      Map(fieldsAsPairs :_*)
+    }
+
     0
   }
 
