@@ -67,6 +67,13 @@ object BidConfig {
         case None => null
       }
 
+    //map contain all object fields and values
+    val fields = getFields(bidRequest)
+
+    //this is the raw filed value from BidRequest - same as if taken from object getter
+    val feature = unpackField(fields.get(str)).toString
+
+
     0
   }
 }
