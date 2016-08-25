@@ -67,6 +67,18 @@ object BidConfig {
         case None => null
       }
 
+    /**
+      * Helper method to unpack double (ctr value) from map of features -> avgCTR
+      *
+      * @param opt
+      * @return
+      */
+    def unpack(opt: Option[Double]) =
+      opt match {
+        case Some(s) => s
+        case None => 0.0
+      }
+
     //map contain all object fields and values
     val fields = getFields(bidRequest)
 
