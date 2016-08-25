@@ -55,7 +55,18 @@ object BidConfig {
       Map(fieldsAsPairs :_*)
     }
 
+    /**
+      * Helper method to unpack object of BidRequest field -> value
+      *
+      * @param opt
+      * @return
+      */
+    def unpackField(opt: Option[Any]) =
+      opt match {
+        case Some(s) => s
+        case None => null
+      }
+
     0
   }
-
 }
