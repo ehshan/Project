@@ -40,7 +40,12 @@ class Bid extends Algorithim{
     // THE CTR PARAMETER FOR THE LINEAR FORMULA
     val avgCTR = average(avgCTRs)
 
-    0
+    val percent = ((avgCTR * 100.0f) / baseCTR)/100
+
+    val price = (baseBid * percent).toInt
+
+    price
+
   }
 
   /**
