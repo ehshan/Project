@@ -31,7 +31,7 @@ object BidEngine {
     val marketPrice = request.payingPrice
 
     val bid = new Bid
-    val ourBid = bid.getConstantBid
+    val ourBid = bid.getAvgCTRPrice(request)
 
     val bidOption = if (marketPrice < ourBid) request else null
 
