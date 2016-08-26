@@ -32,7 +32,10 @@ class Bid extends Algorithim{
 
   }
 
-  def getAvgCTRPrice(bid:BidRequest): Int ={
+  def getAvgCTRPrice(bidRequest:BidRequest): Int ={
+
+    val avgCTRs = BidConfig.getAllCTR(bidRequest)
+
     0
   }
 
