@@ -34,7 +34,11 @@ class Bid extends Algorithim{
 
   def getAvgCTRPrice(bidRequest:BidRequest): Int ={
 
+    //AN ARRAY OF ALL THE MEAN CTR VALUE FOR TARGET FEATURES
     val avgCTRs = BidConfig.getAllCTR(bidRequest)
+
+    // THE CTR PARAMETER FOR THE LINEAR FORMULA
+    val avgCTR = average(avgCTRs)
 
     0
   }
@@ -58,5 +62,14 @@ class Bid extends Algorithim{
 
     min + rnd.nextInt( (max - min) + 1 )
   }
+
+  /**
+    * Helper method to get the mean value from an array of doubles
+    * @param s
+    * @return
+    */
+  def average(s: Seq[Double]): Double =
+    s.foldLeft((0.0, 1)) ((acc, i) => (acc._1 + (i - acc._1) / acc._2, acc._2 + 1))._1
+
 
 }
