@@ -11,6 +11,17 @@ object BidConfig {
   val path = "F:\\_MSC_PROJECT\\project-data\\bid-config\\"
 
   /**
+    * Method to get all the ctr values for weighting
+    *
+    * @param bidRequest
+    * @return
+    */
+  def getAllCTR (bidRequest: BidRequest):Array[Double] = {
+    val ctr = (feature: String) => getCTR(feature, bidRequest,configFeature(feature))
+    features.map(ctr)
+  }
+
+  /**
     * Method to take a feature and get a map of all possible CTR values from config file and place to map
     *
     * @param feature
