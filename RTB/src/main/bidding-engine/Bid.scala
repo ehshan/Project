@@ -32,6 +32,10 @@ class Bid extends Algorithim{
 
   }
 
+  def getAvgCTRPrice(bid:BidRequest): Int ={
+    0
+  }
+
   /**
     * Returns a fixed bid amount
     * @return
