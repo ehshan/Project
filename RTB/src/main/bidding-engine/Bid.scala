@@ -32,6 +32,11 @@ class Bid extends Algorithim{
 
   }
 
+  /**
+    * Linear bidding formula use the average feature ctr
+    * @param bidRequest
+    * @return
+    */
   def getAvgCTRPrice(bidRequest:BidRequest): Int ={
 
     //AN ARRAY OF ALL THE MEAN CTR VALUE FOR TARGET FEATURES
