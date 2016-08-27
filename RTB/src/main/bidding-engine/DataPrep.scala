@@ -18,8 +18,9 @@ object DataPrep {
     val noClickProb = udf(no)
     val clickProb = udf(yes)
 
-    df.withColumn("No-Click-Probability", noClickProb(df("Probability")))
-      .withColumn("Month", clickProb(df("Probability")))
+    df/*withColumn("no-click-Probability", noClickProb(df("probability")))*/
+      .withColumn("click-probability", clickProb(df("probability")))
+      .drop("probability")
   }
 
 }
