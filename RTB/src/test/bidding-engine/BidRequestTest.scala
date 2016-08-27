@@ -31,6 +31,6 @@ class BidRequestTest extends FunSuite{
   test("Test BidRequest Constructor"){
     val request = BidRequest(line)
 
-    assert(request.bidId == "\"88db9ffd2dc45e3f77fbffe53d01d5a5")
+    assert(request.bidId == "88db9ffd2dc45e3f77fbffe53d01d5a5")
   }
 }
