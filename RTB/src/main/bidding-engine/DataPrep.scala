@@ -23,4 +23,18 @@ object DataPrep {
       .drop("probability")
   }
 
+  /**
+    * Method to remove transformed features
+    * @param df
+    * @return
+    */
+  def removeTransformations(df:DataFrame): DataFrame ={
+    df.drop("Month").drop("Day").drop("Click").drop("Hour").drop("TotalImpressions").drop("TotalAdViews")
+      .drop("AdSlotWidth-vector").drop("AdSlotHeight-vector").drop("AdSlotVisibility-vector")
+      .drop("AdSlotFormat-vector").drop("CreativeID-vector").drop("City-vector").drop("Month").drop("Region-vector")
+      .drop("Hour-vector").drop("TotalAdViews-vector").drop("Month").drop("TotalImpressions-vector")
+      .drop("features").drop("rawPrediction").drop("prediction")
+  }
+
+
 }
