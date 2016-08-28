@@ -13,6 +13,7 @@ class TransformTest extends FunSuite{
     //PRE-PROCESS DATA
     val df = Data.build(sc, sqlContext)
 
+    //EXTRACT AND ADD SECOND ORDER FEATURES
     val transformed = Features.addSecondOrder(df)
 
     //CHECK DATA
