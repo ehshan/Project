@@ -6,7 +6,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 class TransformTest extends FunSuite{
 
   def main(args: Array[String]) {
-    val conf = new SparkConf().setAppName("test-data-frame").setMaster("local")
+    val conf = new SparkConf().setAppName("test-transform-data").setMaster("local")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
