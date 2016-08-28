@@ -32,6 +32,12 @@ class BidTest extends FunSuite{
     "0"
 
 
+  test("Test Bid Class"){
+    val bid = new Bid
+
+    assert(bid != null)
+  }
+
   test("Test Fixed Bid"){
     val bid = new Bid
 
