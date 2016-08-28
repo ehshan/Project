@@ -32,6 +32,12 @@ class BidRequestTest extends FunSuite{
     "0"
 
 
+  test("Test BidRequest Object"){
+    val request = BidRequest(line)
+
+    assert(request != null)
+  }
+
   test("Test BidRequest Constructor"){
     val request = BidRequest(line)
 
