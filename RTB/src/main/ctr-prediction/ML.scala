@@ -1,7 +1,7 @@
 import java.io.PrintWriter
 
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.ml.classification.{RandomForestClassifier, BinaryLogisticRegressionSummary, LogisticRegression}
+import org.apache.spark.ml.classification.{BinaryLogisticRegressionSummary, LogisticRegression, RandomForestClassifier}
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator
 import org.apache.spark.ml.feature._
 import org.apache.spark.ml.param.ParamMap
@@ -12,7 +12,6 @@ import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.DoubleType
 
 /**
@@ -138,7 +137,7 @@ object ML {
     //PROBABILITY
     val cvProbability = cvTransformed.select("label","probability")
 
-    val probDf = splitProbability(cvProbability)
+    val probDf = DataPrep.splitProbability(cvProbability)
 
     //RESULTS OF GRID SEARCH
     cvModel.getEstimatorParamMaps.zip(cvModel.avgMetrics).foreach(println)
