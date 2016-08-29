@@ -4,8 +4,11 @@ import scala.io.Source
 
 object BidEngine {
 
-  //SESSION-3
-  val path = "D:\\_MSC_PROJECT\\sample-datasets\\i-pin-you-season-3\\leaderboard.test.data.20131021_28.txt"
+  //THE LOCATION OF THE DATA CREATED BY RUNNING BidModel
+  val path = ""
+
+  //SESSION-3 RAW DATA
+//  val path = "D:\\_MSC_PROJECT\\sample-datasets\\i-pin-you-season-3\\leaderboard.test.data.20131021_28.txt"
 
 
   /**
@@ -31,7 +34,8 @@ object BidEngine {
     val marketPrice = request.payingPrice
 
     val bid = new Bid
-    val ourBid = bid.getAvgCTRPrice(request)
+    val ourBid = bid.getBidPrice(request) // PREDICTED CTR STRATEGY
+//    val ourBid = bid.getAvgCTRPrice(request) // AVERAGE CTR STRATEGY
 
     val bidOption = if (marketPrice < ourBid) request else null
 
