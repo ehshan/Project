@@ -37,4 +37,20 @@ object DataPrep {
   }
 
 
+  /**
+    * Create a click target variable from test data and appends it to a data-frame
+    * @param df
+    * @return
+    */
+  def createTarget(df: DataFrame): DataFrame = {
+
+    val click: (String => Double) = (arg: String) => if (arg != "0") 1.0 else 0.0
+
+    val clickFunc = udf(click)
+
+    df.withColumn("Click", clickFunc(col("Clicks")))
+
+  }
+
+
 }
