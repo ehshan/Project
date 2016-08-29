@@ -254,6 +254,39 @@ object ML {
   }
 
   /**
+    * The optimize LG model to be used for bid engine
+    * @param df
+    * @return
+    */
+  def bidModel(df:DataFrame):DataFrame = {
+
+    val encodedData = ModelData.multiBinaryFeatures(df)
+
+    val (trainingSet, testingSet) = splitData(encodedData)
+
+    val va = ModelData.makeVectorAssembler(encodedData,ModelData.features)
+
+    val lr = new LogisticRegression()
+      .setLabelCol("Click")
+      .setElasticNetParam(0.0)
+      .setRegParam(0.01)
+      .setFitIntercept(false)
+
+    val pipeline = new Pipeline().setStages(Array(va, lr))
+
+    val paramMap = makeParamGrid(lr)
+
+    val crossVal = makeCrossValidator(pipeline, paramMap)
+
+    val cvModel = crossVal.fit(trainingSet)
+
+    //ADDED BEST MODEL:
+    val best = cvModel.bestModel
+
+    best.transform(testingSet)
+  }
+
+  /**
     * Helper method to cast click column from a string to a double
     *
     * @param df
