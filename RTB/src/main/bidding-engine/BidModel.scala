@@ -7,7 +7,7 @@ object BidModel {
   val path = ""
 
   def prepData()={
-    val conf = new SparkConf().setAppName("bid-model").setMaster("local")
+    val conf = new SparkConf().setAppName("bid-model").setMaster("local[*]")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
