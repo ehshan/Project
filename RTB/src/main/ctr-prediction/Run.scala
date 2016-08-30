@@ -19,7 +19,9 @@ object Run {
 
     //FEATURE TRANSFORMATION
     val binarySet = ModelData.binaryFeatures(so)
-    val numSet = ModelData.numericalFeatures(so)
+
+    //MODEL TRAINING AND EVALUATION
+    val model = ML.lrModel(binarySet)
 
   }
 }
