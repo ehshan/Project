@@ -7,7 +7,7 @@ import org.apache.spark.{SparkContext, SparkConf}
 object Run {
 
   def main(args: Array[String]){
-    val conf = new SparkConf().setAppName("ctr-prediction").setMaster("local")
+    val conf = new SparkConf().setAppName("ctr-prediction").setMaster("local[*]")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
