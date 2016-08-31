@@ -23,5 +23,8 @@ object Run {
     //MODEL TRAINING AND EVALUATION
     val model = ML.lrModel(binarySet)
 
+    //CONFIG VALUES FOR AVG CTR BIDDING - EDIT PATH
+    Store.writeConfigValues(df,"configFiles")
+
   }
 }
