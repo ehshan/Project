@@ -8,7 +8,7 @@ object BidConfig {
     "adSlotFormat","creativeID")
 
   //path to config files
-  val path = "F:\\_MSC_PROJECT\\project-data\\bid-config\\"
+  val path = "configFiles"
 
   /**
     * Method to get all the ctr values for weighting
