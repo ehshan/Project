@@ -122,9 +122,8 @@ object Store {
     *
     * @param df
     */
-  def writeConfigValues(df: DataFrame){
+  def writeConfigValues(df: DataFrame, path: String){
     //TO SINGLE FILE
-    val path = ""
 
     val city = df.groupBy("City").agg(avg("Click"))
     city.coalesce(1).write.format("com.databricks.spark.csv").option("header", "false").save(path+"\\city")
