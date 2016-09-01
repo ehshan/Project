@@ -4,9 +4,9 @@ import org.apache.spark.sql.types.StructType
 
 object BidFrame {
 
-  val path3 = "D:\\_MSC_PROJECT\\sample-datasets\\i-pin-you-season-3\\leaderboard.test.data.20131021_28.txt"
+  val path3 = "ipinyou.contest.dataset\\testing3rd\\leaderboard.test.data.20131021_28.txt"
 
-  val path2 = "D:\\_MSC_PROJECT\\sample-datasets\\i-pin-you-season-2\\leaderboard.test.data.20130613_15.txt"
+  val path2 = "ipinyou.contest.dataset\\testing2nd\\leaderboard.test.data.20130613_15.txt"
 
   /**
     * All impression logs to single DataFrame
