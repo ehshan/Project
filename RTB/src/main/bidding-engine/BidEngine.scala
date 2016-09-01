@@ -5,10 +5,10 @@ import scala.io.Source
 object BidEngine {
 
   //THE LOCATION OF THE DATA CREATED BY RUNNING BidModel
-  val path = ""
+  val path = "BidLogs"
 
   //SESSION-3 RAW DATA
-//  val path = "D:\\_MSC_PROJECT\\sample-datasets\\i-pin-you-season-3\\leaderboard.test.data.20131021_28.txt"
+//  val path = "ipinyou.contest.dataset\testing3rd\leaderboard.test.data.20131021_28.txt"
 
 
   /**
@@ -31,11 +31,16 @@ object BidEngine {
     */
   def handleRequest(s: String): BidRequest={
     val request = BidRequest(s)
-    val marketPrice = request.payingPrice
+
+    val marketPrice = request.payingPrice //NORMAL MARKET
+//    val marketPrice = request.biddingPrice //AGGRESSIVE MARKET
+
 
     val bid = new Bid
     val ourBid = bid.getBidPrice(request) // PREDICTED CTR STRATEGY
 //    val ourBid = bid.getAvgCTRPrice(request) // AVERAGE CTR STRATEGY
+//    val ourBid = bid.getConstantBid // FIXED BID STRATEGY
+//    val ourBid = bid.getRandomBid // RANDOM BID STRATEGY
 
     val bidOption = if (marketPrice < ourBid) request else null
 
@@ -98,10 +103,10 @@ object BidEngine {
     */
   def getSpend(bids: Seq[BidRequest]):Int ={
 
-    //Aggressive
+    //AGGRESSIVE
     //bids.foldLeft(0)((accum, bid) => accum + bid.biddingPrice)
 
-    //normal
+    //NORMAL
     bids.foldLeft(0)((accum, bid) => accum + bid.payingPrice)
   }
 
