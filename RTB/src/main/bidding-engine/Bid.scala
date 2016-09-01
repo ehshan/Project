@@ -12,11 +12,15 @@ class Bid extends Algorithim{
   //THE AVERAGE CTR FROM TRAINING DATA
   val baseCTR = 8.237307135252534E-4
 
-  val fixedBidPrice = 100
+  val fixedBidPrice = 50
+//  val fixedBidPrice = 100
+//  val fixedBidPrice = 150
+//  val fixedBidPrice = 200
+//  val fixedBidPrice = 250
 
 
   /**
-    * A Bid Response
+    * A Bid Response - linear formulae using predicted ctr
     * @param bidRequest
     * @return
     */
