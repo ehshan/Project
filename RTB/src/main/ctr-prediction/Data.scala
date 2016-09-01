@@ -12,7 +12,7 @@ import scala.io.Source
 object Data {
 
   //location of the data - change as appropriate
-  val path = "D:\\_MSC_PROJECT\\datasets\\ipinyou-dataset\\ipinyou.contest.dataset"
+  val path = "ipinyou.contest.dataset"
 
   /**
     * Method to bulld a DataFrame with all log data for 2nd and 3rd seasons
@@ -24,10 +24,10 @@ object Data {
   def build(sc: SparkContext, sqlContext: SQLContext): DataFrame = {
 
     //create the impression frame
-    val imps = buildImpFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema"))
+    val imps = buildImpFrame(sc, sqlContext, buildSchema("schema"))
 
     //create the click frame
-    val click = buildClickFrame(sc, sqlContext, buildSchema(".\\.\\.\\.\\schema"))
+    val click = buildClickFrame(sc, sqlContext, buildSchema("schema"))
 
     //merge both frames
     val merge = mergeLogs(imps,click,sqlContext)
