@@ -4,7 +4,7 @@ import org.apache.spark.{SparkContext, SparkConf}
 object BidModel {
 
   //PATH WHERE TRAINED DATA WILL BE WRITTEN TO. CHANGE AS DESIRED
-  val path = ""
+  val path = "BidLogs"
 
   def prepData()={
     val conf = new SparkConf().setAppName("bid-model").setMaster("local[*]")
@@ -12,7 +12,7 @@ object BidModel {
     val sqlContext = new SQLContext(sc)
 
     //LOAD FRAME
-    val df = BidFrame.buildFrame(sc,sqlContext,Data.buildSchema("schema"))
+    val df = BidFrame.buildFrame(sc,sqlContext,Data.buildSchema("src\\main\\bidding-engine\\schema"))
 
     //SECOND ORDER FEATURES
     val so = Features.addSecondOrder(df)
