@@ -4,9 +4,9 @@ import org.apache.spark.sql.types.StructType
 
 object BidFrame {
 
-  val path3 = "ipinyou.contest.dataset\\testing3rd\\leaderboard.test.data.20131021_28.txt"
+  val season2 = "ipinyou.contest.dataset\\testing2nd\\leaderboard.test.data.20130613_15.txt"
 
-  val path2 = "ipinyou.contest.dataset\\testing2nd\\leaderboard.test.data.20130613_15.txt"
+  val season3 = "ipinyou.contest.dataset\\testing3rd\\leaderboard.test.data.20131021_28.txt"
 
   /**
     * All impression logs to single DataFrame
@@ -19,10 +19,10 @@ object BidFrame {
   def buildFrame(sc: SparkContext, sqlContext: SQLContext, schema: StructType): DataFrame = {
 
     val second = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
-      .schema(schema).option("delimiter", "\\t").load(path2)
+      .schema(schema).option("delimiter", "\\t").load(season2)
 
     val third = sqlContext.read.format("com.databricks.spark.csv").option("header", "true")
-      .schema(schema).option("delimiter", "\\t").load(path3)
+      .schema(schema).option("delimiter", "\\t").load(season3)
 
     second.unionAll(third)
 
